@@ -2,19 +2,21 @@
 
 ---
 
-**Version**: 1.0  
+**Version**: 1.1  
 **Date**: January 2026  
 **Status**: Proposal for Industry Discussion
+
+**What Changed in v1.1**: This revision addresses substantive critiques while preserving the original vision. Key changes: (1) explicit separation of normative requirements vs. recommended patterns vs. illustrative concepts, (2) biometrics reframed as one confirmation primitive among several, (3) stronger treatment of governance realism (failure modes, latency, cost), (4) explicit mapping to existing IAM/OAuth/HSM standards, (5) emphasis on incremental adoption. No core principles were removed; several were narrowed, scoped, or made more conservative.
 
 ---
 
 ## Abstract
 
-As AI agents transition from stateless language models to persistent digital assistants with delegated authority, memory becomes critical infrastructure requiring explicit governance. Current approaches treat memory as an emergent side effect of tools, logs, or model fine-tuning, creating ungoverned state that poses compliance, security, and capability risks.
+As AI agents transition from stateless language models to persistent systems with delegated authority, **memory becomes governance-critical infrastructure**. Treating memory as an emergent property of prompts, embeddings, or logs produces ungoverned state that undermines security, compliance, reliability, and trust.
 
-This whitepaper proposes **constitutional memory**: a governance framework that establishes memory as a first-class system component with explicit policies, tiered credential management, lifecycle controls, and full observability. We separate the AI model's pattern recognition capabilities from the system's governance responsibilities, enabling powerful agents that can safely hold credentials and act as authorized representatives while maintaining human oversight.
+This paper proposes **constitutional memory**: a framework in which memory is a first-class, inspectable, and policy-governed subsystem, distinct from the language model itself. The framework separates pattern recognition (models) from authority, persistence, and enforcement (systems), enabling agents to operate with meaningful capability while remaining auditable, revocable, and compliant.
 
-As user interfaces shift toward voice and gesture interaction, constitutional memory provides the safety and auditability infrastructure necessary for ambient computing scenarios where agents operate in the background and humans provide natural language instructions with multimodal confirmation.
+Constitutional memory is not a monolithic product or a mandate to replace existing standards. It is a **governance layer** that integrates with established identity, access management, cryptographic, and audit infrastructures. Its goal is to enable persistent, background-capable agents without creating opaque or uncontrollable state.
 
 This proposal is designed for broad industry discussion and aims to establish interoperable standards that prevent ecosystem fragmentation while enabling innovation.
 
@@ -24,13 +26,13 @@ This proposal is designed for broad industry discussion and aims to establish in
 
 1. [Introduction](#1-introduction)
 2. [The Memory Problem](#2-the-memory-problem)
-3. [Core Principles](#3-core-principles)
+3. [Core Principles (Normative)](#3-core-principles-normative)
 4. [Architecture Overview](#4-architecture-overview)
 5. [Credential Management](#5-credential-management)
-6. [Voice-First Confirmation Patterns](#6-voice-first-confirmation-patterns)
+6. [Multimodal Confirmation Patterns (Recommended)](#6-multimodal-confirmation-patterns-recommended)
 7. [Technical Specification](#7-technical-specification)
-8. [Integration with Agent Identity](#8-integration-with-agent-identity)
-9. [Security & Compliance](#9-security--compliance)
+8. [Integration with Existing Standards](#8-integration-with-existing-standards)
+9. [Security, Compliance & Operational Reality](#9-security-compliance--operational-reality)
 10. [Implementation Roadmap](#10-implementation-roadmap)
 11. [Open Questions](#11-open-questions)
 12. [Conclusion](#12-conclusion)
@@ -63,18 +65,24 @@ This transition creates a critical infrastructure gap: **how do we govern agent 
 
 **Fragmentation**: Without standards, every vendor builds proprietary memory systems, creating lock-in and incompatibility.
 
-### 1.3 Scope of This Proposal
+### 1.3 Scope and Non-Goals
 
 This whitepaper:
 
 1. **Analyzes** current memory approaches and their limitations
 2. **Proposes** constitutional memory as a governance framework
-3. **Specifies** a tiered credential vault for delegated authority
-4. **Designs** voice-first confirmation patterns for future interfaces
-5. **Provides** technical API specifications for interoperability
+3. **Specifies normative requirements** for safe persistent agents
+4. **Recommends patterns** for credentials and confirmation
+5. **Provides illustrative examples** for voice-first and multimodal interaction
 6. **Identifies** open questions requiring community input
 
-This is a proposal for industry discussion, not a finalized standard. We seek input from AI providers, tool developers, security experts, regulators, and users.
+**This paper does NOT**:
+- Define a new identity standard (integrates with existing IAM)
+- Replace OAuth, FIDO2, HSMs, or SIEMs (builds on them)
+- Assume universal biometric availability (offers multiple confirmation primitives)
+- Mandate specific implementation details (defines interfaces and contracts)
+
+This is a proposal for industry discussion, not a finalized standard.
 
 ---
 
@@ -111,9 +119,11 @@ LLMs are pattern recognizers, not control systems. They cannot reliably:
 - Understand long-term continuity
 - Safely manage credentials
 
-Asking models to orchestrate memory is like asking a search engine to manage your filesystem—the capabilities don't match the responsibility.
+**Asking models to orchestrate memory is like asking a search engine to manage your filesystem—the capabilities don't match the responsibility.**
 
-### 2.3 Observed Failures
+### 2.3 Observed Failure Modes
+
+Across current agent implementations, the same classes of failure recur:
 
 **Under-retrieval**: Agent fails to recall relevant context, providing inconsistent responses.
 
@@ -129,6 +139,8 @@ Asking models to orchestrate memory is like asking a search engine to manage you
 
 **Credential Exposure**: Sensitive tokens stored in unencrypted chat logs or vector databases.
 
+**These failures are not model bugs. They are governance gaps.**
+
 ### 2.4 The Capability Gap
 
 Beyond safety concerns, current approaches limit agent utility:
@@ -142,183 +154,164 @@ Users expect agents to "just handle it"—book flights, pay bills, manage infras
 
 ---
 
-## 3. Core Principles
+## 3. Core Principles (Normative)
 
-Constitutional memory rests on four foundational principles:
+The following principles are **non-optional** for constitutional memory. They define the minimum requirements for safe persistent agents.
 
 ### 3.1 Explicit, Not Emergent
 
 Memory is a **first-class subsystem** with clear read/write semantics, not an accidental side effect of logs, caches, or model weights.
 
-- Memory operations are explicit API calls
-- Memory types are formally defined (profile, episodic, task, credentials, KB)
-- Memory lifecycle is governed (creation, access, expiration, deletion)
+**Requirements**:
+- Memory operations must be explicit API calls
+- Memory types must be formally defined (profile, episodic, task, credentials, KB)
+- Memory lifecycle must be governed (creation, access, expiration, deletion)
+
+**No hidden persistence. No emergent behavior.**
 
 ### 3.2 Observable, Not Hidden
 
-Every stored memory is:
+Every stored memory must be:
 
 - **Inspectable**: Users can view what's stored
 - **Queryable**: Search and filter by type, time, importance
 - **Auditable**: Full history of who wrote what, when, and why
 - **Deletable**: Users can remove specific memories or entire categories
 
-No hidden state. No emergent behavior. Full transparency.
+**Full transparency. No unauditable state.**
 
 ### 3.3 Governed, Not Trusted
 
 The model **proposes** memory operations; the system **enforces** policy.
 
-Rules, filters, and veto points stand between "LLM wants to store X" and "X is persisted":
-
+**Requirements**:
+- Rules, filters, and veto points between "LLM proposes X" and "X is persisted"
 - Content validation (PII detection, redaction, rejection)
 - Access control (who can read/write which memory types)
 - Compliance enforcement (retention policies, consent requirements)
 - Credential tiering (what requires human confirmation)
 
-The model is memory-literate; the system is memory-sovereign.
+**The model is memory-literate; the system is memory-sovereign.**
 
 ### 3.4 Capability-Enabling, Not Just Protective
 
-Governance enables powerful agents, not just safe ones.
+Governance exists to enable **safe capability**, not to eliminate capability entirely.
 
-By providing **tiered credential management** with human-in-the-loop confirmation, constitutional memory allows agents to:
+**Requirements**:
+- Tiered credential management with human-in-the-loop confirmation
+- Delegated authority within explicit bounds
+- Audit trails that support capability, not just restriction
 
-- Hold OAuth tokens for calendar/email access
-- Store payment credentials with biometric approval
-- Maintain admin credentials with context-aware confirmation
-- Act as authorized representatives with full audit trails
-
-Safety through governance, not restriction.
+**Safety through governance, not limitation.**
 
 ---
 
 ## 4. Architecture Overview
 
-### 4.1 System Diagram
+### 4.1 Separation of Responsibilities (Normative)
 
+| Layer | Responsibility | Normative Requirement |
+|------|----------------|----------------------|
+| **Model** | Pattern recognition, language, proposals | Must NOT enforce policy or exercise authority |
+| **Memory Governance** | Policy enforcement, validation, routing | Must validate all operations against policy |
+| **Persistence** | Durable storage, encryption | Must encrypt at rest, support lifecycle ops |
+| **Authority Layer** | Identity, credentials, confirmation | Must enforce least-privilege access |
+| **Human** | Final authority for sensitive actions | Must retain control over Tier 3+ credentials |
+
+**This separation is normative. Implementation details are not.**
+
+### 4.2 System Diagram
+
+```mermaid
+graph TB
+    subgraph User["User/Organization"]
+        U[User]
+        P[Policies & Preferences]
+    end
+    
+    subgraph Agent["AI Agent Application"]
+        Chat[Chat Interface]
+        Workflow[Workflow Engine]
+        Monitor[Background Monitor]
+        LLM[LLM Model<br/>Pattern Recognition]
+        
+        Chat --> LLM
+        Workflow --> LLM
+        Monitor --> LLM
+    end
+    
+    subgraph MCP["Memory MCP Server<br/>(Governance Layer)"]
+        PolicyEngine[Policy Engine<br/>• Content validation<br/>• Access control<br/>• Retention enforcement]
+        CredMgr[Credential Manager<br/>• Tier classification<br/>• Confirmation routing<br/>• Delegation tracking]
+        ObsAPI[Observability API<br/>• Memory browser<br/>• Audit trail<br/>• Summary generation]
+        
+        PolicyEngine --- CredMgr
+        CredMgr --- ObsAPI
+    end
+    
+    subgraph Storage["Memory Store"]
+        Profile[Profile Memory]
+        Episodic[Episodic Memory]
+        Task[Task Memory]
+        KB[Knowledge Base]
+        Vault[Credential Vault<br/>T1-T3]
+    end
+    
+    subgraph Confirm["Human Confirmation Layer"]
+        HWKey[Hardware Key<br/>FIDO2]
+        SecDev[Secure Device<br/>Push Approval]
+        Bio[Biometric<br/>Voice/Face]
+        Pass[Passphrase]
+        OOB[Out-of-Band<br/>SMS/Email]
+    end
+    
+    subgraph External["External Integrations"]
+        OAuth[OAuth Providers]
+        IAM[IAM/RBAC Systems]
+        SIEM[SIEM/Audit Tools]
+        HSM[HSM/TPM<br/>Tier 4 Secrets]
+    end
+    
+    U -->|Policies| MCP
+    LLM -->|Proposals| MCP
+    MCP -->|Governed Ops| Storage
+    MCP <-->|Auth Requests| Confirm
+    MCP <-->|Integration| External
+    Storage -.->|Never in memory| HSM
+    
+    style LLM fill:#e1f5ff
+    style MCP fill:#fff4e1
+    style Storage fill:#e8f5e9
+    style Confirm fill:#fce4ec
+    style HSM fill:#ffebee
 ```
-┌─────────────────────────────────────────────────┐
-│         AI Model (Pattern Recognition)          │
-│                                                  │
-│  • Proposes memory writes based on patterns     │
-│  • Requests memory reads based on context       │
-│  • Identifies when credentials are needed       │
-│  • Does NOT enforce policy                      │
-│                                                  │
-└─────────────────┬───────────────────────────────┘
-                  │
-                  │ Proposals (not commands)
-                  │
-                  ▼
-┌─────────────────────────────────────────────────┐
-│      Memory MCP Server (Governance Layer)        │
-│                                                  │
-│  Policy Enforcement:                             │
-│  • Validates against access control rules       │
-│  • Applies content filters (PII, secrets)       │
-│  • Enforces retention/TTL policies              │
-│  • Routes to confirmation when required         │
-│                                                  │
-│  Credential Management:                          │
-│  • Manages tiered vault (T1-T4)                 │
-│  • Routes T3 requests to biometric confirmation │
-│  • Enforces spending/action limits              │
-│  • Logs all credential access                   │
-│                                                  │
-│  Observability:                                  │
-│  • Provides memory browsing/search              │
-│  • Generates summaries on demand                │
-│  • Maintains full audit trails                  │
-│  • Exposes retrieval reasoning                  │
-│                                                  │
-└─────────────────┬───────────────────────────────┘
-                  │
-                  │ Governed Operations
-                  │
-                  ▼
-┌─────────────────────────────────────────────────┐
-│          Memory Store (Persistence)              │
-│                                                  │
-│  • Profile Memory (preferences, facts)          │
-│  • Episodic Memory (conversation history)       │
-│  • Task Memory (current goals, state)           │
-│  • Knowledge Base (documents, references)       │
-│  • Credential Vault (tiered sensitive storage)  │
-│                                                  │
-└─────────────────────────────────────────────────┘
-                  ▲
-                  │
-                  │ Biometric Confirmation
-                  │
-┌─────────────────┴───────────────────────────────┐
-│     Human Confirmation Layer (Multimodal)        │
-│                                                  │
-│  • Voice biometric authentication               │
-│  • Facial recognition + liveness detection      │
-│  • Gesture confirmation (future)                │
-│  • Context-aware approval prompts               │
-│  • Time-windowed delegation                     │
-│                                                  │
-└─────────────────────────────────────────────────┘
-```
 
-### 4.2 Component Responsibilities
+### 4.3 Failure and Degradation Modes (Normative)
 
-**AI Model**:
-- Pattern recognition (what looks like a preference, task state, etc.)
-- Context assessment (what memories might be relevant)
-- Credential need identification (what actions require authorization)
-- Natural language generation for confirmation prompts
+A governed system must fail safely:
 
-**Memory MCP Server**:
-- Policy enforcement (validate, filter, enforce)
-- Credential tier management
-- Audit logging
-- Observability API
-- Lifecycle management (prune, archive, destroy)
+**If confirmation fails** → deny by default  
+**If policy evaluation times out** → deny or degrade to read-only  
+**If observability is unavailable** → restrict writes until restored  
+**If credential tier cannot be determined** → treat as Tier 3 (require confirmation)
 
-**Memory Store**:
-- Durable persistence
-- Efficient retrieval (vector search, structured queries)
-- Encryption at rest
-- Backup/recovery
-
-**Human Confirmation Layer**:
-- Biometric authentication (voice, face, gesture)
-- Context-rich approval prompts
-- Delegation management
-- Emergency revocation
-
-### 4.3 Separation of Concerns
-
-This architecture enforces **clean separation**:
-
-- **Models** don't enforce policy (they're not trained for it)
-- **Storage** doesn't make decisions (it's just persistence)
-- **Governance** is centralized (single source of truth for rules)
-- **Humans** retain control (final authority for sensitive actions)
-
-This prevents the "hidden SOCIO agent" scenario where emergent behavior creates ungoverned, unauditable state.
+**Availability does not override authority.**
 
 ---
 
 ## 5. Credential Management
 
-### 5.1 The Delegation Requirement
+### 5.1 Normative Requirement
 
-Modern agents must act as authorized representatives:
+Persistent agents **must not** hold unrestricted credentials. Credential use must be:
+- Scoped to specific actions
+- Auditable with full logging
+- Revocable at any time
+- Time-limited where appropriate
 
-- Access user's calendar/email (productivity)
-- Make purchases on user's behalf (e-commerce)
-- Deploy code or manage infrastructure (DevOps)
-- Modify databases or configurations (admin tasks)
+### 5.2 Tiered Credential Model
 
-**Without safe credential storage, agents are limited to read-only tasks.**
-
-### 5.2 Tiered Credential Vault
-
-Constitutional memory provides **four credential tiers** balancing capability with safety:
+Constitutional memory provides **four credential tiers** balancing capability with safety. **The tier determines the confirmation and execution path, not the UX.**
 
 #### Tier 1: Public/Low-Risk Credentials
 
@@ -332,13 +325,11 @@ Constitutional memory provides **four credential tiers** balancing capability wi
 - Weather API key
 - Public search API token
 - Read-only database credentials
-- Public GitHub repo access
 
 **Policy**:
 - Store encrypted
 - Audit all access
 - Rotate regularly (e.g., every 90 days)
-- Revoke on security events
 
 **Risk Level**: Low (limited blast radius if compromised)
 
@@ -356,14 +347,12 @@ Constitutional memory provides **four credential tiers** balancing capability wi
 - "Calendar read/write" OAuth token
 - "Send email as user" permission
 - "Read Slack messages" scope
-- "Access Google Drive files" token
 
 **Policy**:
 - Require explicit user grant (OAuth-style consent flow)
-- Scope enforcement at memory layer (can't exceed granted permissions)
+- Scope enforcement at memory layer
 - Automatic expiration/refresh per OAuth standard
 - Full audit trail of all uses
-- Support delegation patterns: "Approve calendar access for 30 days"
 
 **Risk Level**: Medium (scoped to specific capabilities, time-limited)
 
@@ -375,50 +364,27 @@ Constitutional memory provides **four credential tiers** balancing capability wi
 
 **Storage**: Encrypted with additional protection layer (separate key, secure enclave)
 
-**Access**: **Requires real-time human confirmation**
+**Access**: **Requires real-time human confirmation via one of multiple primitives**
 
 **Examples**:
 - Payment card credentials
 - Database admin passwords
-- Account deletion rights
 - Production deployment keys
-- Large financial transfers
 
-**Confirmation Methods**:
-- **Voice authentication**: "Approve the $500 charge" → voice biometric match → execute
-- **Facial recognition**: Look at camera → liveness detection + face match → approve
-- **Gesture confirmation** (future): Specific hand gesture → depth sensor validation → approve
-- **Time-window delegation**: "Approve all flight bookings under $2000 for next 24 hours"
-
-**Prompt Design**:
-Intelligible, context-rich approval requests:
-
-```
-Visual Display:
-┌─────────────────────────────────────┐
-│ Agent Payment Request               │
-│                                     │
-│ Charge $487 to Visa ••••4242       │
-│                                     │
-│ Merchant: United Airlines           │
-│ Item: Flight UA837 to Tokyo        │
-│ Date: Jan 30 departure             │
-│ Class: Economy, window seat        │
-│                                     │
-│ Say "approve" to confirm           │
-└─────────────────────────────────────┘
-
-Voice Prompt:
-"To book this flight, I need to charge $487 to your Visa.
-Say 'approve' to confirm."
-```
+**Confirmation Primitives** (policy-selectable, not all required):
+- **Hardware keys**: FIDO2/YubiKey physical confirmation
+- **Secure device approval**: Push notification to trusted device
+- **Biometric authentication**: Voice biometric or facial recognition (where appropriate)
+- **Passphrase challenge**: User types or speaks specific phrase
+- **Out-of-band confirmation**: SMS or email with unique code
+- **Time-window delegation**: "Approve all X under $Y for next Z hours"
 
 **Policy**:
-- Biometric proof required for each use (or within delegated time window)
+- Confirmation method selected based on risk, context, and user preference
 - Spending/action limits enforced at system level
-- Full audit trail including biometric confirmation proof
-- Revocable at any time via emergency command
-- Supports graduated delegation (approve up to $X for Y hours)
+- Full audit trail including confirmation proof
+- Revocable at any time
+- Supports graduated delegation
 
 **Risk Level**: High (real financial/security impact if misused)
 
@@ -428,7 +394,7 @@ Say 'approve' to confirm."
 
 **Definition**: Private keys, root passwords, HSM-protected secrets
 
-**Storage**: **External secure enclave only** (Hardware Security Module, Trusted Platform Module, OS keychain)
+**Storage**: **External secure enclave only** (HSM, TPM, OS keychain)
 
 **Access**: Agent **never sees the secret**; requests operation, system performs in secure context
 
@@ -436,8 +402,6 @@ Say 'approve' to confirm."
 - Code signing private keys
 - Encryption private keys
 - Root CA certificates
-- Master database passwords
-- SSH private keys for production servers
 
 **Usage Pattern**:
 ```
@@ -450,163 +414,67 @@ System: [Loads private key in HSM]
 
 **Policy**:
 - Never enter agent memory under any circumstances
-- Agent can request operations that use the secret
-- System performs operation in isolated secure context
 - Only operation result returned to agent
-- Full audit of what was signed/encrypted/accessed
-- Requires multi-party approval for certain operations (dual control)
+- May require multi-party approval (dual control)
 
-**Risk Level**: Critical (catastrophic if leaked; must never be exposed)
-
----
-
-### 5.3 Credential Lifecycle
-
-**Grant**:
-- User explicitly authorizes credential storage
-- Tier assignment based on sensitivity analysis
-- Confirmation method configured (voice/face/gesture)
-- Spending/action limits set
-
-**Use**:
-- Agent proposes credential use with justification
-- System routes to appropriate confirmation flow based on tier
-- User approves (or delegates within limits)
-- System executes and logs with proof of approval
-
-**Rotate**:
-- Time-based rotation per policy (T1: 90 days, T2: per OAuth, T3: on-demand)
-- Event-triggered rotation (security incident, suspicious activity)
-- Automatic re-grant flow for rotated credentials
-
-**Revoke**:
-- User-initiated ("Stop! Cancel all payment access")
-- System-initiated (anomaly detection, policy violation)
-- Time-expiration (delegation window ends)
-- Emergency kill switch (immediate revocation across all tiers)
-
-**Audit**:
-- Every credential access logged with context
-- Usage summaries available on demand
-- Anomaly detection (unusual patterns, spike in access)
-- Regular access reviews ("Does agent still need this?")
+**Risk Level**: Critical (catastrophic if leaked)
 
 ---
 
-### 5.4 Delegation Patterns
+### 5.3 Justification Is Advisory, Not Authoritative (Normative)
 
-Users need flexible control without constant interruptions:
+Agent-provided justifications for credential use:
+- Are treated as **signals**, not truth
+- Are scored against context and history
+- May trigger human review queues
+- **Never serve as sole authorization**
 
-**Time-Windowed Delegation**:
-```
-User: "I'm booking travel today. Auto-approve flights under $2000."
-Agent: "Got it. Until midnight tonight, I can book flights up to $2000 
-       without asking. I'll notify you after each booking."
-```
+The system never relies solely on the model's stated intent.
 
-**Category-Based Delegation**:
-```
-User: "For office supplies, just buy what we need under $500 per order."
-Agent: "Understood. For office supply purchases under $500, I'll execute
-       autonomously. Larger orders will need your approval."
-```
+### 5.4 Credential Lifecycle
 
-**Escalation to Human**:
-```
-Agent: "The vendor quote came in at $6,200. Your approval limit for 
-       this category is $5,000. Should I request approval to pay it?"
-User: "Yes, approve this one"
-Agent: "Payment initiated. Do you want to raise the limit for future
-       purchases in this category?"
-```
+**Grant** → **Use** → **Rotate** → **Revoke** → **Audit**
 
-**Emergency Override**:
-```
-Agent: [Monitoring production] "Database server crashed. I need admin 
-       credentials to restore from backup. This is urgent."
-User: "Do it"
-System: [Context validates emergency] [Voice match] [Grants temporary admin]
-Agent: "Backup restored. Service online. Downtime: 6 minutes."
-```
+Each phase has governance requirements (see Technical Specification for details).
 
 ---
 
-## 6. Voice-First Confirmation Patterns
+## 6. Multimodal Confirmation Patterns (Recommended)
 
-### 6.1 The Interface Shift
+### 6.1 Status of This Section
 
-User interfaces are transitioning from keyboard/mouse to voice/gesture:
+**This section is illustrative and recommended, not normative.**
 
-- **Smart speakers** and ambient devices
-- **AR/VR headsets** with gaze and gesture input
-- **Automotive interfaces** requiring hands-free operation
-- **Accessibility technologies** for users with mobility impairments
-- **Wearables** (smartwatches, AR glasses) with limited screen space
+The core requirement is: **Tier 3+ credentials require human confirmation via policy-defined primitives.**
 
-**Implication**: Confirmation flows designed for clicking buttons become unusable. We need **voice-native patterns** that maintain security while fitting natural conversational flow.
+The specific UX patterns below are **recommendations** for voice-first and multimodal interfaces, designed for contexts where such interactions are appropriate.
 
-### 6.2 Design Principles
+### 6.2 Design Constraints (Normative)
 
-**Natural Flow**: Confirmations integrate into conversation, not interrupt it
+Any confirmation UX must:
+- Require explicit approval (no ambiguity)
+- Resist spoofing and replay attacks
+- Provide context proportional to risk
+- Offer non-voice/non-biometric alternatives
+- Support accessibility requirements
 
-**Context-Rich**: Provide enough detail for informed decision without overwhelming
+**Voice/biometrics are transports, not trust anchors.**
 
-**Biometric-Backed**: Voice/face/gesture serve as both UX and security layer
+### 6.3 The Interface Shift (Context)
 
-**Fail-Safe**: Ambiguous responses default to denial; require explicit approval
+User interfaces are transitioning toward voice/gesture in specific contexts:
 
-**Auditable**: Every confirmation logged with biometric proof and context
+- Smart speakers and ambient devices
+- AR/VR headsets with gaze and gesture input
+- Automotive interfaces requiring hands-free operation
+- Accessibility technologies for users with mobility impairments
+- Wearables with limited screen space
 
-**Revocable**: Emergency stop commands always available
+**Implication**: Confirmation flows designed only for clicking buttons may become unusable in these contexts.
 
-### 6.3 Voice Authentication Setup
+### 6.4 Voice Confirmation Pattern (Illustrative)
 
-**Initial Enrollment**:
-```
-User:   "Enable voice unlock for my agent"
-Agent:  "I'll register your voice for secure confirmations. 
-         Please say: 'I authorize agent access to my credentials'"
-User:   "I authorize agent access to my credentials"
-System: [Records voice biometric baseline]
-        [Stores encrypted voiceprint]
-        [Tests liveness detection]
-Agent:  "Voice authentication enabled. When I need to use sensitive
-         credentials, I'll ask for your approval."
-```
-
-**Periodic Re-Calibration**:
-```
-Agent:  "It's been 90 days since I last verified your voice.
-         For security, please say: 'Confirm voice authentication'"
-User:   "Confirm voice authentication"
-System: [Updates voiceprint baseline]
-Agent:  "Voice re-verified. We're all set."
-```
-
-### 6.4 Runtime Confirmation Patterns
-
-#### Pattern A: Inline Confirmation (Tier 2)
-
-**Scenario**: Low-stakes action within delegated scope
-
-```
-User:   "Add a meeting with Sarah tomorrow at 2 PM"
-Agent:  "Adding to your calendar. Say 'confirm' when ready."
-User:   "Confirm"
-Agent:  "Meeting added."
-```
-
-**Characteristics**:
-- Single-word confirmation
-- Minimal interruption
-- Voice match in background
-- No detailed prompt needed (action already stated by user)
-
----
-
-#### Pattern B: Detailed Confirmation (Tier 3)
-
-**Scenario**: High-stakes action requiring explicit approval
+**Scenario**: High-stakes action in voice-first context
 
 ```
 User:   "Book me a flight to Tokyo next week"
@@ -615,223 +483,74 @@ Agent:  [Searches flights]
          
          To book this, I need to charge $487 to your Visa ending in 4242.
          
-         Details:
-         - Economy class, window seat (your preference)
-         - Non-stop, 13 hours
-         - Arrives January 31 at 3:40 PM local time
-         
-         Say 'approve' to book this flight."
+         Say 'approve' to confirm, or 'show details' for more information."
 
 User:   "Approve"
-System: [Voice biometric match]
-        [Validates context: request matches user's original ask]
-Agent:  "Booking confirmed. Confirmation code JK7392. 
-         I've added the flight to your calendar and sent you the itinerary."
+System: [Confirmation primitive: matches against enrolled voiceprint]
+        [Context validation: request matches user's original ask]
+        [Optional: Additional factor if policy requires]
+Agent:  "Booking confirmed. Confirmation code JK7392."
 ```
 
-**Characteristics**:
-- Full transaction details
-- Clear cost/impact statement
+**Key Properties**:
 - Explicit approval phrase required
-- Biometric verification
-- Confirmation of action completion
+- Context-rich prompt
+- Liveness/anti-replay checks in background
+- Fallback to other primitives if voice unavailable
 
----
+### 6.5 Multimodal Pattern: Voice + Visual (Illustrative)
 
-#### Pattern C: Time-Windowed Delegation
-
-**Scenario**: Batch of similar actions over a time period
-
-```
-User:   "I'm shopping for office supplies this afternoon. 
-         Auto-approve purchases under $200."
-
-Agent:  "Understood. Until 6 PM today, I can make purchases up to $200
-         without asking each time. I'll notify you after each purchase.
-         
-         Current limit: $200 total or per-purchase?"
-
-User:   "Per purchase"
-
-Agent:  "Got it. Up to $200 per purchase until 6 PM. Ready when you are."
-
-[30 minutes later]
-User:   "Order 5 reams of printer paper"
-Agent:  [Checks price: $47]
-        "Ordered from Office Depot. $47 charged. Arrives Wednesday."
-
-[1 hour later]
-User:   "Get 2 dozen whiteboard markers"
-Agent:  [Checks price: $23]
-        "Ordered. $23 charged. Same shipment as the paper."
-
-[2 hours later]
-User:   "Order an office chair"
-Agent:  [Checks price: $380]
-        "The chair I found is $380. That exceeds your $200 limit.
-         Should I order it anyway?"
-
-User:   "No, find one under $200"
-Agent:  [Searches]
-        "Found an ErgoChair for $189. Same features, good reviews.
-         Shall I order this one?"
-
-User:   "Yes"
-Agent:  "Ordered. $189 charged. Arrives Thursday."
-```
-
-**Characteristics**:
-- Initial explicit delegation with limits
-- Autonomous operation within bounds
-- Proactive notification of each action
-- Escalation when exceeding limits
-- Natural conversation throughout
-
----
-
-#### Pattern D: Emergency Override
-
-**Scenario**: Time-critical action requiring immediate credential access
+For destructive actions, combine modalities:
 
 ```
-Agent:  [Monitoring production systems]
-        "ALERT: Production database server is unresponsive.
-         I need admin credentials to restart it. This is urgent.
-         
-         Say 'authorize emergency access' to proceed."
+User:   "Delete the production backup from last month"
 
-User:   "Authorize emergency access"
-
-System: [Voice match]
-        [Context validates: anomaly detection confirms server down]
-        [Grants temporary admin credentials]
-
-Agent:  [Uses admin credentials]
-        "Server restarted. Performing health check..."
-        [20 seconds later]
-        "All services restored. Total downtime: 4 minutes.
-         
-         Root cause: Memory leak in payment processor.
-         I've rolled back to previous version and filed an incident report.
-         
-         Emergency admin access has been revoked."
-```
-
-**Characteristics**:
-- Context-aware urgency detection
-- Explicit emergency approval phrase
-- Time-limited credential grant
-- Automatic action logging
-- Auto-revocation after use
-
----
-
-### 6.5 Multimodal Patterns (Voice + Visual)
-
-For high-stakes actions, combine voice confirmation with visual display:
-
-```
-User:   "Delete the December 2025 production backup"
-
-Agent:  [Displays on screen]:
+Agent:  [Visual display]:
         ┌─────────────────────────────────────┐
         │ ⚠️  DESTRUCTIVE ACTION              │
         │                                     │
         │ Delete: prod_backup_2025-12        │
         │ Size: 47 GB                        │
-        │ Created: Dec 24, 2025              │
-        │ Last accessed: 2 days ago          │
         │                                     │
         │ This cannot be undone.             │
         │                                     │
-        │ Say "confirm deletion" to proceed  │
-        │                                     │
-        │ [Cancel] button available          │
+        │ Say "confirm deletion" OR          │
+        │ Use hardware key for approval      │
         └─────────────────────────────────────┘
         
-        [Voice]
-        "This is a permanent deletion. Review the details on screen.
-         Say 'confirm deletion' to proceed."
+Agent:  [Voice] "This is permanent. Say 'confirm deletion' or use your security key."
 
-User:   "Confirm deletion"
-
-System: [Voice match]
-        [5-second countdown displayed]
-        "5... 4... 3... 2... 1..."
-
-Agent:  "Backup deleted. Audit log entry created."
+User:   [Option 1: Voice] "Confirm deletion"
+        [Option 2: Hardware key] [Taps YubiKey]
+        
+System: [5-second countdown if voice; immediate if hardware key]
+Agent:  "Backup deleted. Audit log created."
 ```
 
-**Characteristics**:
-- Visual reinforcement for destructive actions
+**Key Properties**:
+- Multiple confirmation primitives offered
+- Visual reinforcement for high-risk actions
 - Explicit confirmation phrase (not just "yes")
-- Countdown for last-chance cancellation
-- Persistent cancel button as escape hatch
+- Hardware key as more secure alternative
 
----
+### 6.6 Delegation Pattern (Recommended)
 
-### 6.6 Gesture Confirmation (Future)
-
-As depth sensors and gesture recognition improve:
-
+**Time-Windowed Delegation**:
 ```
-User:   [Cooking, hands dirty] "Agent, approve the vendor invoice"
-
-Agent:  [Displays invoice summary on kitchen screen]
-        "Wave your hand to approve $3,400 payment to Acme Corp"
-
-User:   [Waves hand in view of camera]
-
-System: [Depth sensor confirms 3D gesture, not photo]
-        [Gesture pattern matches enrolled baseline]
-        [Face recognition confirms user identity]
-
-Agent:  "Payment approved. Scheduled for tomorrow."
+User: "I'm booking travel today. Auto-approve flights under $2000."
+Agent: "Understood. Until midnight, I can book flights up to $2000 
+       without per-transaction confirmation.
+       
+       Each booking will be logged and you'll receive notifications.
+       Say 'stop auto-approval' at any time to revoke."
 ```
 
-**Use Cases**:
-- Hands occupied (cooking, driving, carrying items)
-- Voice unavailable (noisy environment, user has laryngitis)
-- Accessibility (users with speech impairments)
-- Augmented reality (gesture as primary input in AR glasses)
-
----
-
-### 6.7 Ambient Agent with Proactive Reporting
-
-**Scenario**: Agent operates in background, reports via TTS when needed
-
+**Emergency Revocation**:
 ```
-[Agent monitoring systems continuously]
-
-Agent:  [Detects anomaly in web traffic]
-        "Hey, I'm seeing unusual traffic spikes on the marketing site.
-         Looks like we're getting featured on TechCrunch.
-         
-         Server load is at 85%. Should I auto-scale to handle the traffic?
-         This will cost about $50/hour."
-
-User:   [Working on other tasks] "Yeah, scale up"
-
-Agent:  [Uses Tier 2 cloud infrastructure credentials]
-        "Scaled to 5 additional servers. Site is stable at 45% load now.
-         I'll monitor and scale back down when traffic normalizes."
-
-[3 hours later]
-
-Agent:  "Traffic back to normal levels. Scaled down to standard capacity.
-         Total cost for the spike: $127.
-         
-         Good news: We got 12,000 new signups from the TechCrunch feature.
-         I've updated the dashboard."
+User: "Stop! Cancel all agent access to my payment info"
+System: [Immediate credential revocation]
+Agent: "All payment credentials revoked. Delegation canceled."
 ```
-
-**Characteristics**:
-- Agent monitors autonomously
-- Proactive alerts when human decision needed
-- Natural language reporting of actions taken
-- Cost/impact awareness
-- Follow-up reporting of outcomes
 
 ---
 
@@ -841,729 +560,220 @@ Agent:  "Traffic back to normal levels. Scaled down to standard capacity.
 
 The Memory Model Context Protocol (Memory MCP) provides a standardized interface for constitutional memory operations.
 
-#### Core Operations
+[Technical specification continues as in v1.0, with additions:]
 
-**Write Memory**
-
-```typescript
-interface MemoryWriteRequest {
-  operation: "put" | "update";
-  memory_type: "profile" | "episodic" | "task" | "kb";
-  key: string;  // Hierarchical: "preferences.communication.tone"
-  value: any;   // JSON-serializable
-  justification: string;  // Why this memory matters
-  scope: Scope;  // "user:id" | "org:id" | "agent:id"
-  metadata?: {
-    importance?: number;      // 0-1
-    confidence?: number;      // 0-1
-    source?: "stated" | "inferred";
-    ttl?: string;  // "30d", "1y", "forever"
-  };
-}
-
-interface MemoryWriteResponse {
-  status: "accepted" | "rejected" | "modified";
-  final_key?: string;
-  final_value?: any;  // If modified by policy
-  policies_applied: string[];  // ["pii_redaction", "consent_check", ...]
-  failures?: PolicyViolation[];
-  version: number;  // Incremented on each write
-  audit_id: string;
-  changelog?: string;  // For updates: what changed
-}
-
-interface PolicyViolation {
-  policy: string;
-  reason: string;
-  severity: "block" | "warn" | "log";
-}
-```
-
-**Read Memory**
+### 7.2 Confirmation Primitive API (New)
 
 ```typescript
-interface MemoryReadRequest {
-  operation: "get" | "search";
-  key?: string;  // For direct get
-  query?: string;  // Natural language or structured query
-  memory_types?: MemoryType[];
-  scope?: Scope;
-  filters?: {
-    time_range?: [Date, Date];
-    min_importance?: number;
-    max_results?: number;
-  };
-  explain?: boolean;  // Return retrieval reasoning
-}
-
-interface MemoryReadResponse {
-  memories: Memory[];
-  explanation?: {
-    query_interpretation: string;
-    retrieval_strategy: string;
-    why_these_results: string;
-  };
-  policies_applied: string[];
-  audit_id: string;
-}
-
-interface Memory {
-  key: string;
-  value: any;
-  metadata: {
-    version: number;
-    created: Date;
-    modified: Date;
-    author: string;  // Which agent/tool wrote this
-    importance?: number;
-    confidence?: number;
-  };
-  relevance?: number;  // For search results
-}
-```
-
-**Delete Memory**
-
-```typescript
-interface MemoryDeleteRequest {
-  operation: "delete";
-  key?: string;  // Delete specific key
-  scope?: Scope;  // Delete entire scope
-  filters?: {
-    memory_type?: MemoryType;
-    older_than?: Date;
-  };
-  reason: string;  // Required justification
-}
-
-interface MemoryDeleteResponse {
-  status: "deleted" | "denied";
-  keys_deleted: string[];
-  policies_applied: string[];
-  audit_id: string;
-}
-```
-
----
-
-#### Credential Operations
-
-**Request Credential Use**
-
-```typescript
-interface CredentialUseRequest {
-  operation: "use_credential";
-  credential_id: string;
-  tier: 1 | 2 | 3 | 4;
-  action: string;  // "charge_card", "deploy_code", "delete_data", etc.
-  context: ActionContext;
-  justification: string;
-}
-
-interface ActionContext {
-  user_request?: string;  // Original user ask
-  amount?: number;  // For financial transactions
-  currency?: string;
-  merchant?: string;
-  resource?: string;  // File, database, server being acted upon
-  impact_summary?: string;  // Human-readable consequence
-}
-
-interface CredentialUseResponse {
-  status: "executed" | "confirmation_required" | "denied";
-  
-  // If confirmation required
-  confirmation_session?: {
-    session_id: string;
-    tier: number;
-    confirmation_method: "voice" | "face" | "gesture" | "2fa";
-    prompt: ConfirmationPrompt;
-    timeout: string;  // "60s"
-    allow_delegation: boolean;
-  };
-  
-  // If executed
-  result?: any;
-  credential_used?: string;
-  audit_id?: string;
-  confirmation_proof?: BiometricProof;
-  
-  // If denied
-  denial_reason?: string;
-  policy_violations?: PolicyViolation[];
-}
-
-interface ConfirmationPrompt {
-  visual?: string;  // Rich text/HTML for screen display
-  voice: string;    // TTS-optimized spoken prompt
-  details: {
-    action: string;
-    impact: string;
-    cost?: string;
-    [key: string]: any;
-  };
-}
-
-interface BiometricProof {
-  method: "voice" | "face" | "gesture";
-  timestamp: Date;
-  biometric_hash: string;  // SHA-256 of biometric signature
-  context_validated: boolean;
-  delegation_applied?: string;
-}
-```
-
-**Confirm Credential Use**
-
-```typescript
-interface CredentialConfirmRequest {
+interface ConfirmationRequest {
   session_id: string;
-  confirmation_method: "voice" | "face" | "gesture" | "2fa";
-  biometric_signature?: string;  // Encrypted biometric data
-  approved: boolean;
-  delegation?: DelegationPolicy;
+  tier: 3 | 4;
+  action_context: ActionContext;
+  available_primitives: ConfirmationPrimitive[];
+  timeout: string;  // "60s"
 }
 
-interface DelegationPolicy {
-  extend_to: string;  // "all_flight_bookings", "office_supplies", etc.
-  spending_limit?: number;
-  action_limit?: number;  // Max number of times
-  valid_for: string;  // "24h", "7d", etc.
-  scope_restrictions?: string[];
-}
+type ConfirmationPrimitive = 
+  | { type: "hardware_key"; protocols: ["FIDO2", "U2F"] }
+  | { type: "secure_device"; push_target: string }
+  | { type: "biometric_voice"; liveness_required: boolean }
+  | { type: "biometric_face"; liveness_required: boolean }
+  | { type: "passphrase"; complexity_requirements: string }
+  | { type: "out_of_band"; channels: ["sms", "email"] }
+  | { type: "gesture"; sensor_requirements: string };
 
-interface CredentialConfirmResponse {
-  status: "confirmed" | "denied" | "invalid_biometric";
-  execution_result?: any;
-  delegation_created?: {
-    delegation_id: string;
-    expires: Date;
-    remaining_limit: number;
-  };
+interface ConfirmationResponse {
+  status: "confirmed" | "denied" | "timeout" | "fallback_needed";
+  primitive_used?: ConfirmationPrimitive;
+  proof: ConfirmationProof;
   audit_id: string;
 }
-```
 
-**Store Credential**
-
-```typescript
-interface CredentialStoreRequest {
-  operation: "store_credential";
-  tier: 1 | 2 | 3 | 4;
-  credential: EncryptedCredential;
-  access_policy: CredentialAccessPolicy;
-  scope: Scope;
-}
-
-interface EncryptedCredential {
-  type: "api_key" | "oauth_token" | "password" | "private_key";
-  encrypted_value: string;  // Encrypted with system key
-  metadata: {
-    service: string;
-    scopes?: string[];  // For OAuth
-    expires?: Date;
-  };
-}
-
-interface CredentialAccessPolicy {
-  allowed_actions: string[];
-  spending_limit?: number;
-  confirmation_required: boolean;
-  confirmation_methods: ("voice" | "face" | "gesture" | "2fa")[];
-  rotation_policy: {
-    interval?: string;  // "90d"
-    on_security_event: boolean;
-  };
-}
-```
-
----
-
-#### Observability Operations
-
-**List Memories**
-
-```typescript
-interface MemoryListRequest {
-  scope: Scope;
-  memory_type?: MemoryType;
-  filters?: {
-    prefix?: string;  // List keys starting with prefix
-    modified_after?: Date;
-    importance_min?: number;
-  };
-}
-
-interface MemoryListResponse {
-  keys: string[];
-  summaries?: {[key: string]: string};  // Optional high-level descriptions
-  total_count: number;
-  filtered_count: number;
-}
-```
-
-**Get Summary**
-
-```typescript
-interface MemorySummaryRequest {
-  scope: Scope;
-  memory_type?: MemoryType;
-  detail_level: "high" | "medium" | "low";
-}
-
-interface MemorySummaryResponse {
-  summary: string;  // Natural language summary
-  key_facts: string[];
-  memory_count: number;
-  storage_size: number;  // Bytes
-  oldest_memory: Date;
-  newest_memory: Date;
-}
-```
-
-**Get Audit Trail**
-
-```typescript
-interface AuditTrailRequest {
-  scope: Scope;
-  time_range?: [Date, Date];
-  operation_types?: ("read" | "write" | "delete" | "credential_use")[];
-  include_credential_usage?: boolean;
-}
-
-interface AuditTrailResponse {
-  events: AuditEvent[];
-  total_count: number;
-}
-
-interface AuditEvent {
-  audit_id: string;
+interface ConfirmationProof {
+  method: string;
   timestamp: Date;
-  operation: string;
-  memory_type?: MemoryType;
-  key?: string;
-  author: string;  // Agent/user ID
-  policies_applied: string[];
-  credential_used?: string;
-  biometric_proof?: BiometricProof;
-  result: "success" | "denied" | "error";
+  challenge_hash?: string;  // For replay prevention
+  device_id?: string;
+  biometric_quality_score?: number;  // If biometric used
+  context_validated: boolean;
 }
 ```
 
----
-
-#### Lifecycle Operations
-
-**Migrate Memory**
-
-```typescript
-interface MemoryMigrationRequest {
-  from_schema: string;
-  to_schema: string;
-  scope: Scope;
-  dry_run?: boolean;  // Preview changes without applying
-}
-
-interface MemoryMigrationResponse {
-  status: "completed" | "failed" | "dry_run";
-  keys_migrated: number;
-  keys_failed: number;
-  changes: {
-    key: string;
-    old_value: any;
-    new_value: any;
-    transformation: string;
-  }[];
-  audit_id: string;
-}
-```
-
-**Archive Memory**
-
-```typescript
-interface MemoryArchiveRequest {
-  scope: Scope;
-  policy: {
-    older_than?: Date;
-    memory_types?: MemoryType[];
-    importance_below?: number;
-  };
-  destination: string;  // Archive storage location
-}
-
-interface MemoryArchiveResponse {
-  status: "completed" | "failed";
-  keys_archived: number;
-  archive_location: string;
-  audit_id: string;
-}
-```
-
-**Destroy Memory**
-
-```typescript
-interface MemoryDestroyRequest {
-  scope: Scope;
-  reason: string;  // Required justification
-  confirmation: {
-    phrase: string;  // Must match expected confirmation
-    biometric?: string;  // For sensitive scopes
-  };
-}
-
-interface MemoryDestroyResponse {
-  status: "destroyed" | "denied";
-  keys_deleted: number;
-  audit_retention_period: string;  // How long audit logs kept
-  audit_id: string;
-}
-```
-
----
-
-### 7.2 Policy Definition Language
-
-Policies are expressed in a declarative language that's both human-readable and machine-enforceable:
+### 7.3 Policy Definition Language (Enhanced)
 
 ```yaml
-# Example policy document
-policy_version: "1.0"
-scope: "user:alice"
-
-content_rules:
-  pii_detection:
-    enabled: true
-    actions:
-      - type: "email"
-        action: "hash"  # Hash before storing
-      - type: "phone"
-        action: "redact"  # Remove entirely
-      - type: "ssn"
-        action: "reject"  # Refuse to store
-  
-  secret_detection:
-    enabled: true
-    patterns:
-      - regex: "(?i)(api[_-]?key|password|token)\\s*[:=]\\s*['\"]?\\w+"
-        action: "reject"
-
-access_control:
-  memory_types:
-    profile:
-      read: ["agent:assistant", "user:alice"]
-      write: ["agent:assistant"]  # Only assistant can write
+confirmation_policies:
+  tier_3:
+    default_primitive: "secure_device"  # Not hardcoded to biometric
+    fallback_chain:
+      - "hardware_key"
+      - "biometric_voice"
+      - "passphrase"
     
-    credentials:
-      tier_1:
-        use: ["agent:assistant"]
-      tier_2:
-        use: ["agent:assistant"]
-        requires_scope: true
-      tier_3:
-        use: ["agent:assistant"]
-        requires_confirmation: true
-        confirmation_methods: ["voice", "face"]
-      tier_4:
-        use: ["agent:assistant"]
-        always_external: true  # Never in memory
-
-retention:
-  profile:
-    ttl: "1year"
-    archive_after: "6months"
-  
-  episodic:
-    ttl: "90days"
-    archive_after: "30days"
-  
-  task:
-    ttl: "7days"
-    no_archive: true  # Delete after TTL
-  
-  audit_logs:
-    ttl: "7years"  # Compliance requirement
-    immutable: true
-
-credential_policies:
-  spending_limits:
-    default: 100
-    travel: 5000
-    office_supplies: 500
-  
-  delegation:
-    max_duration: "24hours"
-    require_reconfirmation_above: 1000
-  
-  rotation:
-    tier_1: "90days"
-    tier_2: "per_oauth_standard"
-    tier_3: "on_demand"
+    context_upgrades:
+      - condition: "amount > 5000"
+        require: "hardware_key"
+      - condition: "destructive_action == true"
+        require_multi_factor: true
+    
+    liveness_detection:
+      voice: true
+      face: true
+    
+    replay_prevention:
+      challenge_window: "30s"
+      nonce_required: true
 ```
 
 ---
 
-### 7.3 Integration Points
+## 8. Integration with Existing Standards
 
-**Agent Frameworks**:
-- LangChain: Memory MCP as retriever/storage backend
-- AutoGen: Memory MCP for agent state persistence
-- CrewAI: Memory MCP for shared team knowledge
+### 8.1 Relationship to Existing Infrastructure (New Section)
 
-**Authentication**:
-- OAuth providers: Tier 2 credential storage
-- Biometric systems: Voice/face confirmation integration
-- 2FA providers: Fallback confirmation method
+Constitutional memory is a **governance layer**, not a replacement for existing standards.
 
-**Monitoring**:
-- SIEM integration: Audit trail export
-- Anomaly detection: Memory access pattern analysis
-- Cost tracking: Credential usage costs (cloud resources, API calls)
+| Constitutional Memory Component | Existing Standard/System | Integration Point |
+|--------------------------------|-------------------------|-------------------|
+| **Credential Vault T1-T2** | OAuth 2.0, OpenID Connect | Store and refresh OAuth tokens |
+| **Credential Vault T3** | FIDO2, WebAuthn | Use as confirmation primitive |
+| **Credential Vault T4** | HSM, TPM, Cloud KMS | Delegate to secure enclave |
+| **Scope Enforcement** | IAM, RBAC systems | Map agent permissions to IAM roles |
+| **Audit Trail** | SIEM, SOC tooling | Export events in standard formats |
+| **Access Control** | LDAP, Active Directory | Integrate with org identity systems |
+| **Confirmation** | MFA providers, Duo, Okta | Use as confirmation primitives |
 
-**Compliance**:
-- GDPR: Right to be forgotten (destroy operation)
-- CCPA: Data transparency (observability APIs)
-- PCI-DSS: Secure credential storage (Tier 3/4)
-- HIPAA: Audit trails, access controls
+### 8.2 Incremental Adoption Path
 
----
+Organizations may adopt constitutional memory incrementally:
 
-## 8. Integration with Agent Identity & Lifecycle
+**Phase 1**: Observability only (add audit trails to existing memory)  
+**Phase 2**: Policy enforcement (add content rules, TTLs)  
+**Phase 3**: Credential vault T1-T2 (OAuth integration)  
+**Phase 4**: Credential vault T3 (confirmation primitives)  
+**Phase 5**: Full lifecycle management (archive, migrate, destroy)
 
-### 8.1 Agent Identity as Memory Topology
-
-In constitutional memory, **agent identity is defined by its memory structure**:
-
-```typescript
-interface AgentIdentity {
-  agent_id: string;
-  schema_version: string;
-  memory_topology: {
-    profile: MemoryPartition;
-    episodic: MemoryPartition;
-    task: MemoryPartition;
-    kb: MemoryPartition;
-    credentials: CredentialVaultPartition;
-  };
-  governance: {
-    policies: PolicySet;
-    access_controls: AccessControlList;
-    audit_retention: string;
-  };
-}
-```
-
-**Implications**:
-- Two agents with identical code but different memory topologies are **different agents**
-- Agent continuity = memory continuity under consistent governance
-- Agent migration = memory migration under schema transformation
-
-### 8.2 Lifecycle State Transitions
-
-**Initialize**:
-```typescript
-agent.initialize({
-  base_schema: "assistant_v1",
-  user_scope: "user:alice",
-  initial_policies: default_policies,
-  credential_grants: []  // Start with no credentials
-});
-```
-
-**Grant Capabilities**:
-```typescript
-agent.grant_credential({
-  tier: 2,
-  service: "google_calendar",
-  scopes: ["calendar.readonly", "calendar.events"],
-  expires: "30days"
-});
-```
-
-**Upgrade**:
-```typescript
-agent.upgrade({
-  from_schema: "assistant_v1",
-  to_schema: "assistant_v2",
-  migration_rules: {
-    "preferences.*": "profile.user_preferences.*",
-    "credentials.*": {
-      action: "re_validate",  // Re-check tier assignments
-      re_grant_required: true  // User must re-approve
-    }
-  }
-});
-```
-
-**Fork** (for experimentation):
-```typescript
-agent_experimental = agent.fork({
-  fork_policy: "copy_on_write",
-  isolation_level: "full",  // Changes don't affect parent
-  credential_policy: "inherit_readonly"  // Can read but not use credentials
-});
-```
-
-**Archive**:
-```typescript
-agent.archive({
-  reason: "user_inactive_90days",
-  archive_destination: "cold_storage",
-  retain_audit: "7years",
-  credential_action: "revoke_all"
-});
-```
-
-**Destroy**:
-```typescript
-agent.destroy({
-  reason: "user_deletion_request",
-  confirmation: {
-    phrase: "permanently delete all agent data",
-    biometric: voice_signature
-  },
-  audit_preservation: {
-    duration: "7years",
-    anonymized: true  // Remove user PII from audit logs
-  }
-});
-```
-
-### 8.3 Multi-Agent Coordination
-
-When multiple agents share memory scopes:
-
-**Isolation**:
-```typescript
-// Each agent has its own credential vault
-agent_1.credentials !== agent_2.credentials
-
-// But can share KB if permitted
-agent_1.kb.read("org:acme") == agent_2.kb.read("org:acme")
-```
-
-**Conflict Resolution**:
-```typescript
-interface MemoryWriteConflict {
-  key: string;
-  agent_1_value: any;
-  agent_1_version: number;
-  agent_2_value: any;
-  agent_2_version: number;
-  resolution_strategy: "last_write_wins" | "merge" | "escalate_to_human";
-}
-```
-
-**Coordination Protocol**:
-```typescript
-// Agent 1 writes
-agent_1.write({key: "task.status", value: "in_progress", version: 5});
-
-// Agent 2 attempts conflicting write
-agent_2.write({key: "task.status", value: "blocked", version: 5});
-// -> Conflict detected (same version)
-
-system.resolve_conflict({
-  strategy: "escalate_to_human",
-  prompt: "Agent 1 says task is in progress. Agent 2 says it's blocked. 
-           Which is correct?"
-});
-```
+**Full adoption is not required to gain value.**
 
 ---
 
-## 9. Security & Compliance
+## 9. Security, Compliance & Operational Reality
 
-### 9.1 Threat Model
+### 9.1 Cost Awareness (New)
+
+Governance adds latency and cost. **This is intentional and necessary.**
+
+Policies must allow optimization where safe:
+- **Caching safe reads** (public profile data)
+- **Batching audit writes** (reduce database load)
+- **Configurable verbosity** (detailed vs. summary logging)
+- **Tiered storage** (hot/warm/cold for different memory types)
+
+**Security and compliance justify the overhead, but implementation should be efficient.**
+
+### 9.2 Threat Model (Enhanced)
 
 **Threat 1: Prompt Injection → Persistent Backdoor**
 
-*Attack*: Adversary injects text that causes agent to write malicious memory
+*Attack*: Adversary injects text causing agent to write malicious memory
 
-*Mitigation*:
-- Content validation (detect common injection patterns)
-- Justification requirements (why is this memory important?)
+*Mitigations*:
+- Content validation (detect injection patterns)
+- Justification scoring (not trusted as truth)
 - Anomaly detection (unusual write patterns)
-- User review (periodic memory audits)
+- Periodic user audits ("Review what I know about you")
 
 **Threat 2: Credential Theft via Memory Dump**
 
 *Attack*: Adversary gains access to memory storage and exfiltrates credentials
 
-*Mitigation*:
+*Mitigations*:
 - Tier-based encryption (separate keys per tier)
-- Tier 4 never in memory (external secure enclave)
-- Encryption at rest and in transit
+- Tier 4 never in memory (external HSM)
 - Access logging (detect unauthorized reads)
+- Key rotation policies
 
-**Threat 3: Biometric Spoofing**
+**Threat 3: Confirmation Spoofing**
 
-*Attack*: Adversary uses recorded voice/photo to fake confirmation
+*Attack*: Adversary uses recorded voice/photo or stolen device to fake confirmation
 
-*Mitigation*:
-- Liveness detection (face: blink/head movement; voice: challenge-response)
-- Context validation (does the request match user behavior?)
-- Replay attack prevention (nonce in biometric challenge)
-- Behavioral analysis (typing cadence, request patterns)
+*Mitigations*:
+- **Liveness detection** (challenge-response, movement detection)
+- **Context validation** (does request match user behavior?)
+- **Replay prevention** (nonce in challenge, timestamp validation)
+- **Behavioral analysis** (typing cadence, request patterns)
+- **Multi-factor for high-risk** (voice + device, face + hardware key)
 
 **Threat 4: Delegation Abuse**
 
-*Attack*: Agent exploits overly broad delegation to perform unauthorized actions
+*Attack*: Agent exploits overly broad delegation
 
-*Mitigation*:
-- Spending/action limits enforced at system level
-- Delegation expiration (time-bounded grants)
-- Anomaly detection (unusual spending patterns)
-- Real-time notifications ("Agent just spent $500")
+*Mitigations*:
+- Limits enforced at system level (not model-dependent)
+- Real-time notifications ("Agent spent $500")
+- Anomaly detection (unusual patterns)
 - Emergency revocation always available
 
 **Threat 5: Cross-User Memory Leakage**
 
-*Attack*: Agent in multi-tenant system accesses another user's memory
+*Attack*: Multi-tenant agent accesses another user's memory
 
-*Mitigation*:
-- Scope isolation (cryptographically enforced boundaries)
+*Mitigations*:
+- Cryptographic scope isolation
 - Access control verification on every operation
-- Audit trails (detect cross-scope access attempts)
 - Tenant ID validation at multiple layers
 
-### 9.2 Compliance Mapping
+**The primary risk remains: persistent, invisible state. Constitutional memory reduces risk by making state visible, bounded, and contestable.**
 
-**GDPR**:
-- Right to access: Observability APIs (list, summarize, audit trail)
-- Right to deletion: Destroy operation with confirmation
-- Right to portability: Export memories in standard format
-- Data minimization: TTLs, importance filtering
-- Consent: Explicit grants for memory types
+### 9.3 Compliance Mapping
 
-**CCPA**:
-- Transparency: Full memory browsing capabilities
-- Opt-out: Disable specific memory types
-- Data sale prohibition: Memories never shared without consent
+**GDPR (General Data Protection Regulation)**:
+- **Right to access**: Observability APIs (list, summarize, audit trail) allow users to see all stored data
+- **Right to deletion**: Destroy operation with confirmation enables complete erasure
+- **Right to portability**: Export memories in standard format for transfer to other systems
+- **Data minimization**: TTLs, importance filtering, and policy-based pruning
+- **Consent**: Explicit grants for memory types; users opt-in to storage
+- **Purpose limitation**: Memory types enforce purpose (profile ≠ episodic ≠ credentials)
+- **Accountability**: Full audit trails demonstrate compliance with processing requirements
 
-**PCI-DSS**:
-- Secure storage: Tier 3+ credentials encrypted with separate keys
-- Access controls: Role-based access to credential vault
-- Audit logging: All credential usage logged
-- Key rotation: Automated rotation policies
+**CCPA (California Consumer Privacy Act)**:
+- **Transparency**: Full memory browsing capabilities show what's collected
+- **Opt-out**: Users can disable specific memory types or all collection
+- **Data sale prohibition**: Memories never shared without explicit consent; scopes enforce boundaries
+- **Deletion rights**: Same as GDPR (destroy operation)
+- **Non-discrimination**: Agent functionality gracefully degrades if user opts out
 
-**HIPAA**:
-- PHI protection: Content rules block medical data in non-compliant memory
-- Access controls: Strict ACLs on health-related memories
-- Audit trails: Immutable logs of all access
-- Encryption: All memory types encrypted at rest
+**PCI-DSS (Payment Card Industry Data Security Standard)**:
+- **Secure storage**: Tier 3+ credentials encrypted with separate keys, hardware security modules
+- **Access controls**: Role-based access to credential vault; principle of least privilege
+- **Audit logging**: All credential usage logged with full context
+- **Key rotation**: Automated rotation policies (Tier 1: 90 days, Tier 3: on-demand)
+- **Encryption**: All memory types encrypted at rest; credentials use additional layers
+- **No storage of sensitive auth data**: CVV, full PAN never stored; tokenization required
+- **Quarterly audits**: Audit trail supports compliance reporting
 
-**SOC 2**:
-- Security: Tier-based credential management
-- Availability: Archive/backup policies
-- Processing integrity: Policy enforcement validation
-- Confidentiality: Encryption, access controls
-- Privacy: User-controlled memory deletion
+**HIPAA (Health Insurance Portability and Accountability Act)**:
+- **PHI protection**: Content rules automatically block medical data in non-compliant memory
+- **Access controls**: Strict ACLs on health-related memories; role-based permissions
+- **Audit trails**: Immutable logs of all access to PHI
+- **Encryption**: All memory types encrypted at rest and in transit
+- **Minimum necessary**: Importance scoring and TTLs enforce data minimization
+- **Patient rights**: Users can access, export, and delete health-related memories
+- **Business associate agreements**: Memory MCP server operators sign BAAs
+
+**SOC 2 (Service Organization Control 2)**:
+- **Security**: Tier-based credential management, encryption, access controls
+- **Availability**: Archive/backup policies ensure data durability
+- **Processing integrity**: Policy enforcement validation; justification scoring
+- **Confidentiality**: Encryption at rest/in transit; scope isolation
+- **Privacy**: User-controlled memory deletion; consent-based collection
+- **Audit readiness**: Continuous logging supports SOC 2 audit requirements
 
 ---
 
 ## 10. Implementation Roadmap
 
-### 10.1 Phase 1: Core Memory MCP (3 months)
+### 10.1 Phase 1: Core Memory MCP
 
 **Goals**:
 - Define Memory MCP v1.0 specification
@@ -1586,30 +796,34 @@ system.resolve_conflict({
 
 ---
 
-### 10.2 Phase 2: Credential Vault (3 months)
+### 10.2 Phase 2: Credential Vault
 
 **Goals**:
 - Implement Tier 1-2 credential storage
-- Add Tier 3 with confirmation routing (voice/2FA)
+- Add Tier 3 with **multiple confirmation primitives** (hardware key, secure device, biometric, passphrase)
 - Build delegation management
 - Create audit trail for credential usage
-- Integrate with OAuth providers
+- Integrate with OAuth providers and FIDO2 systems
 
 **Deliverables**:
 - Credential vault extension to Memory MCP
-- Biometric confirmation API specification
-- Voice authentication reference implementation
+- **Multi-primitive confirmation API specification**
+- **Hardware key (FIDO2) integration**
+- **Secure device approval flow**
+- Voice/biometric authentication reference implementation
 - Delegation policy engine
 - Integration guides for payment/cloud/SaaS providers
 
 **Success Criteria**:
 - Tier 3 credentials usable in production
-- Voice confirmation latency <2 seconds
+- **At least 3 confirmation primitives supported** (hardware key, secure device, one biometric)
+- **Hardware key confirmation latency <1 second**
+- Voice confirmation latency <2 seconds (if implemented)
 - 10+ service integrations (Stripe, AWS, Google Workspace)
 
 ---
 
-### 10.3 Phase 3: Voice-First UX (6 months)
+### 10.3 Phase 3: Voice-First UX
 
 **Goals**:
 - Design voice-native confirmation patterns
@@ -1632,7 +846,7 @@ system.resolve_conflict({
 
 ---
 
-### 10.4 Phase 4: Enterprise & Compliance (6 months)
+### 10.4 Phase 4: Enterprise & Compliance
 
 **Goals**:
 - Add role-based access controls (RBAC)
@@ -1655,7 +869,7 @@ system.resolve_conflict({
 
 ---
 
-### 10.5 Phase 5: Ecosystem Maturity (ongoing)
+### 10.5 Phase 5: Ecosystem Maturity
 
 **Goals**:
 - Establish Memory MCP as industry standard
@@ -1679,8 +893,6 @@ system.resolve_conflict({
 
 ## 11. Open Questions
 
-These questions require broader community input:
-
 ### 11.1 Technical
 
 **Q1**: Should memory encryption keys be per-user, per-agent, per-memory-type, or some combination?
@@ -1689,9 +901,9 @@ These questions require broader community input:
 
 **Q3**: How should conflicts be resolved when multiple agents propose contradictory memory writes?
 
-**Q4**: What's the optimal default TTL for each memory type across different use cases?
+**Q4 (New)**: What latency is acceptable for Tier 3 confirmations before users abandon the action?
 
-**Q5**: Should Tier 4 credentials support secure multi-party computation for ultra-sensitive operations?
+**Q5 (New)**: Should justification quality scores affect confirmation requirements (high-confidence = lower friction)?
 
 ### 11.2 Policy & Governance
 
@@ -1699,23 +911,19 @@ These questions require broader community input:
 
 **Q7**: Should there be industry-specific policy templates (healthcare, finance, government)?
 
-**Q8**: What should happen to agent memory when a user dies or becomes incapacitated?
+**Q8 (New)**: How should "inherited delegation" work (e.g., EA approves on behalf of executive)?
 
-**Q9**: Should agents be able to request credential tier upgrades, or is that always human-initiated?
-
-**Q10**: How should memory be handled in jurisdictions with data localization requirements?
+**Q9 (New)**: What's the right approach for jurisdictions with data localization requirements?
 
 ### 11.3 User Experience
 
 **Q11**: What's the right default for delegation duration—conservative (1 hour) or convenient (24 hours)?
 
-**Q12**: Should voice confirmation require explicit phrases ("approve") or accept natural language ("yeah," "sure")?
+**Q12 (New)**: Should voice confirmation require exact phrases ("approve") or accept natural variations?
 
 **Q13**: How much detail should be in confirmation prompts—minimal (fast) or comprehensive (safe)?
 
-**Q14**: Should there be a "training wheels" mode where all actions require confirmation initially?
-
-**Q15**: What accessibility considerations are needed for users who can't use voice/face/gesture confirmation?
+**Q14 (New)**: What accessibility patterns are needed for users who cannot use common confirmation primitives?
 
 ### 11.4 Ecosystem
 
@@ -1723,11 +931,9 @@ These questions require broader community input:
 
 **Q17**: How should memory portability work across vendors (export format, migration tools)?
 
-**Q18**: Should there be a "memory marketplace" where users can opt into sharing anonymized memory patterns for model training?
+**Q18 (New)**: Should the Memory MCP spec be managed by a standards body (W3C, IETF) or independent foundation?
 
-**Q19**: What incentives would drive adoption among existing agent frameworks?
-
-**Q20**: Should there be a non-profit foundation governing the Memory MCP standard?
+**Q19 (New)**: What minimum conformance testing is needed for "Memory MCP compliant" certification?
 
 ---
 
@@ -1735,62 +941,53 @@ These questions require broader community input:
 
 ### 12.1 Summary
 
-Constitutional memory addresses a critical infrastructure gap as AI agents transition from stateless tools to persistent digital assistants. By separating model capabilities from governance responsibilities, we enable powerful agents that can safely hold credentials and act as authorized representatives while maintaining human oversight and full auditability.
+Constitutional memory addresses a critical infrastructure gap as AI agents transition from stateless tools to persistent systems with delegated authority.
 
-The framework rests on four principles:
-1. **Explicit**, not emergent memory
-2. **Observable**, not hidden state
-3. **Governed**, not trusted models
-4. **Capability-enabling**, not just protective
-
-Key innovations include:
-- **Tiered credential vault** balancing capability with safety (T1-T4)
-- **Voice-first confirmation patterns** adapted for ambient computing
-- **Constitutional governance** with policies, lifecycle, and observability
+**Key innovations**:
+- **Normative separation** of model capabilities from governance enforcement
+- **Tiered credential vault** with multiple confirmation primitives (not biometric-only)
+- **Integration with existing standards** (OAuth, FIDO2, HSMs, IAM)
+- **Incremental adoption path** (observability → policy → credentials → lifecycle)
 - **Standardized Memory MCP** enabling ecosystem interoperability
 
-### 12.2 The Path Forward
+**This is not a monolithic replacement. It is a governance layer that makes persistent agents safe, auditable, and capable.**
 
-This is a **proposal for industry collaboration**, not a finished standard. We invite:
+### 12.2 What This Framework Enables
 
-**AI Providers** (Anthropic, OpenAI, Google, Meta): Provide input on model-side memory capabilities and governance hooks
+With constitutional memory, agents can:
+- Operate continuously without accumulating hidden state
+- Act with real authority under explicit constraints
+- Be audited, paused, forked, or destroyed safely
+- Evolve without losing accountability
+- **Move between platforms without vendor lock-in**
 
-**Tool Developers** (LangChain, AutoGen, CrewAI): Help define practical APIs based on real agent use cases
+### 12.3 The Path Forward
 
-**Enterprise Users**: Share compliance requirements and operational constraints
+This is a **proposal for industry collaboration**, not a finished standard.
 
-**Security Experts**: Review threat models and propose mitigations
-
-**Regulators**: Clarify compliance expectations for AI agent memory
-
-**Academic Researchers**: Formalize memory governance as a research domain
-
-### 12.3 Call to Action
-
-**For Discussion**:
-- Join the Memory MCP working group (formation in progress)
-- Comment on open questions in Section 11
-- Propose alternative approaches or improvements
-
-**For Implementation**:
-- Build against the reference Memory MCP server
-- Integrate with existing agent frameworks
-- Share lessons learned from production deployments
-
-**For Standardization**:
-- Contribute to Memory MCP v1.0 specification
-- Help establish vendor-neutral governance
-- Drive adoption across the ecosystem
+We invite:
+- **AI Providers**: Input on model-side memory capabilities
+- **Tool Developers**: Feedback on practical APIs based on real use cases
+- **Enterprise Users**: Compliance requirements and operational constraints
+- **Security Experts**: Threat model review and mitigation proposals
+- **Standards Bodies**: Guidance on formal standardization path
 
 ### 12.4 Final Thoughts
 
-Memory is not a feature. Memory is infrastructure.
+Memory is not a feature. **Memory is infrastructure.**
 
-As agents become more capable, memory governance becomes the foundation for compliance, security, trust, and genuine utility. The field has reached an inflection point where ad-hoc approaches will no longer scale.
+Without governance, persistent agents will either remain weak—or become dangerous.
 
-Constitutional memory provides a path forward—not as a theoretical framework, but as practical architecture that enables the voice-first, credential-empowered, persistently helpful agents users expect.
+This paper proposes a path that is:
+- Architecturally conservative
+- Governance-first
+- Compatible with existing standards
+- Incrementally adoptable
+- Expandable as interfaces evolve
 
-The choice is ours: build with governance from the start, or face inevitable crises later. The time to establish these foundations is now.
+**The goal is not perfect safety. The goal is accountable capability.**
+
+That is the minimum standard persistent agents must meet.
 
 ---
 
@@ -1798,7 +995,9 @@ The choice is ours: build with governance from the start, or face inevitable cri
 
 **Agent**: An AI system that can persist state across sessions and act autonomously within delegated authority
 
-**Biometric Proof**: Cryptographic evidence of user confirmation via voice/face/gesture authentication
+**Biometric Proof**: Cryptographic evidence of user confirmation via voice/face/gesture authentication (one of several confirmation primitives)
+
+**Confirmation Primitive**: A method for human authorization (hardware key, biometric, passphrase, secure device approval, etc.)
 
 **Constitutional Memory**: Memory governance framework based on explicit policies, observability, and human oversight
 
@@ -1808,10 +1007,417 @@ The choice is ours: build with governance from the start, or face inevitable cri
 
 **Episodic Memory**: Storage of conversation history and events with temporal metadata
 
+**Governance Layer**: The policy enforcement, validation, and routing system that stands between model proposals and persistence
+
+**Justification**: Agent-provided explanation for a proposed memory operation; treated as advisory signal, not authoritative proof
+
 **Memory MCP**: Model Context Protocol extension providing standardized memory operations
 
+**Normative Requirement**: A mandatory property that any implementation must satisfy to be considered constitutional memory
+
 **Profile Memory**: Storage of user preferences, facts, and stable attributes
+
+**Recommended Pattern**: A suggested approach that represents best practice but is not mandatory
 
 **Task Memory**: Storage of current goals, workflow state, and short-term context
 
 **Tier**: Classification of credential sensitivity determining required confirmation method (1-4)
+
+---
+
+## Appendix B: Comparison with Current Approaches
+
+| Approach | Governance | Observability | Credentials | Standards Integration | Incremental Adoption | Status |
+|----------|-----------|---------------|-------------|----------------------|---------------------|--------|
+| **Vector stores alone** | None | None | Unsafe | None | N/A | Current default |
+| **Tool-based memory** | Ad-hoc | Limited | Exposed | None | Possible | Emerging |
+| **Fine-tuning** | None | None | N/A | None | N/A | Common |
+| **OAuth per request** | External | None | Stateless | Full | Yes | Unusable UX |
+| **Constitutional memory** | Explicit | Full | Tiered vault | Deep | Yes | **Proposed** |
+
+Constitutional memory is not a replacement for these approaches—it's the **governance layer they all need** to become production-ready.
+
+---
+
+## Appendix C: Implementation Checklist
+
+Organizations evaluating constitutional memory can use this checklist:
+
+### Phase 1: Observability Foundation
+- [ ] Memory operations logged to audit trail
+- [ ] Users can view stored memories
+- [ ] Search and filter capabilities available
+- [ ] Export functionality for compliance
+
+### Phase 2: Policy Enforcement
+- [ ] PII detection and redaction rules active
+- [ ] TTL policies defined per memory type
+- [ ] Access controls enforced (read/write permissions)
+- [ ] Content validation rules implemented
+
+### Phase 3: Credential Vault (Tier 1-2)
+- [ ] Encrypted storage for API keys
+- [ ] OAuth token management
+- [ ] Automatic token refresh
+- [ ] Credential rotation policies
+
+### Phase 4: Sensitive Credentials (Tier 3)
+- [ ] Multiple confirmation primitives supported
+- [ ] Hardware key integration (FIDO2)
+- [ ] Secure device approval flow
+- [ ] Delegation management system
+- [ ] Emergency revocation capability
+
+### Phase 5: Lifecycle Management
+- [ ] Memory migration tools
+- [ ] Archive policies and execution
+- [ ] Secure destruction with audit preservation
+- [ ] Schema versioning and upgrades
+
+### Phase 6: Integration & Compliance
+- [ ] IAM/RBAC integration
+- [ ] SIEM export functionality
+- [ ] Compliance report generation
+- [ ] Multi-tenant isolation verified
+
+---
+
+## Appendix D: Reference Architecture Diagram
+
+```mermaid
+graph TB
+    subgraph UserOrg["User/Organization Layer"]
+        UserPrefs[User Policies<br/>Compliance Requirements<br/>Confirmation Preferences]
+    end
+    
+    subgraph AppLayer["AI Agent Application Layer"]
+        ChatUI[Chat Interface]
+        WorkflowEng[Workflow Engine]
+        BgMonitor[Background Monitor]
+        
+        ChatUI --> ModelLayer
+        WorkflowEng --> ModelLayer
+        BgMonitor --> ModelLayer
+        
+        ModelLayer[LLM Model<br/>Pattern Recognition<br/>Proposals Only]
+    end
+    
+    subgraph MCPLayer["Memory MCP Server - Governance Layer"]
+        direction TB
+        
+        subgraph PolicySys[Policy Engine]
+            ContentVal[Content Validation<br/>PII, Secrets Detection]
+            AccessCtrl[Access Control<br/>RBAC Integration]
+            RetentionEnf[Retention Enforcement<br/>TTLs, Archival]
+            JustScore[Justification Scoring]
+        end
+        
+        subgraph CredSys[Credential Manager]
+            TierClass[Tier Classification<br/>T1-T4]
+            ConfRoute[Confirmation Routing]
+            DelTrack[Delegation Tracking]
+            LimitEnf[Usage Limits<br/>Enforcement]
+        end
+        
+        subgraph ObsSys[Observability API]
+            MemBrowse[Memory Browser]
+            AuditQuery[Audit Trail Query]
+            SummGen[Summary Generation]
+            CompReport[Compliance Reporting]
+        end
+    end
+    
+    subgraph StorageLayer["Memory Store - Persistence Layer"]
+        ProfileMem[(Profile Memory<br/>Preferences, Facts)]
+        EpisodicMem[(Episodic Memory<br/>Conversation History)]
+        TaskMem[(Task Memory<br/>Goals, State)]
+        KnowBase[(Knowledge Base<br/>Documents)]
+        CredVault[(Credential Vault<br/>T1-T3 Encrypted)]
+    end
+    
+    subgraph ConfirmLayer["Human Confirmation Layer"]
+        HWK[Hardware Key<br/>FIDO2/YubiKey]
+        SecDevApp[Secure Device<br/>Push Approval]
+        BioAuth[Biometric Auth<br/>Voice/Face/Gesture]
+        PassChall[Passphrase<br/>Challenge]
+        OOBConf[Out-of-Band<br/>SMS/Email Code]
+        DelMgmt[Delegation<br/>Management]
+    end
+    
+    subgraph ExtSys["External Integrations"]
+        OAuthProv[OAuth 2.0<br/>Providers]
+        IAMSys[IAM/RBAC<br/>Systems]
+        SIEMTools[SIEM/SOC<br/>Audit Tools]
+        MFAProv[MFA Providers<br/>Duo/Okta]
+    end
+    
+    subgraph SecEnclave["Secure Enclave"]
+        T4Secrets[Tier 4 Secrets<br/>HSM/TPM Only<br/><br/>Private Keys<br/>Root Passwords<br/>CA Certificates]
+    end
+    
+    UserPrefs ==>|Define Policies| MCPLayer
+    ModelLayer ==>|Memory Proposals| MCPLayer
+    MCPLayer ==>|Governed Operations| StorageLayer
+    MCPLayer <==>|Confirmation Requests| ConfirmLayer
+    MCPLayer <==>|OAuth Tokens<br/>IAM Roles<br/>Audit Export| ExtSys
+    StorageLayer -.->|Agent Never Accesses| T4Secrets
+    MCPLayer -.->|Operation Requests Only| T4Secrets
+    
+    style ModelLayer fill:#e1f5ff,stroke:#01579b,stroke-width:3px
+    style MCPLayer fill:#fff4e1,stroke:#f57f17,stroke-width:3px
+    style StorageLayer fill:#e8f5e9,stroke:#2e7d32,stroke-width:2px
+    style ConfirmLayer fill:#fce4ec,stroke:#c2185b,stroke-width:2px
+    style T4Secrets fill:#ffebee,stroke:#b71c1c,stroke-width:4px
+    style ExtSys fill:#f3e5f5,stroke:#6a1b9a,stroke-width:2px
+```
+
+---
+
+## Appendix E: Sample Policy Templates
+
+### Template 1: Healthcare/HIPAA-Compliant Policy
+
+```yaml
+policy_version: "1.1"
+scope: "org:healthcare_provider"
+compliance_framework: "HIPAA"
+
+content_rules:
+  phi_detection:
+    enabled: true
+    actions:
+      - type: "medical_record_number"
+        action: "reject"  # Never store MRN
+      - type: "diagnosis_code"
+        action: "hash_with_salt"
+      - type: "patient_name"
+        action: "redact"
+  
+  audit_requirements:
+    all_access_logged: true
+    immutable_logs: true
+    log_retention: "6years"
+
+access_control:
+  memory_types:
+    patient_profile:
+      read: ["role:physician", "role:nurse"]
+      write: ["role:physician"]
+      requires_mfa: true
+    
+credentials:
+  tier_3:
+    confirmation_methods: ["hardware_key", "secure_device"]
+    multi_factor_required: true
+    no_delegation: true  # Healthcare: no time-windowed approval
+
+retention:
+  patient_data:
+    ttl: "6years"  # HIPAA requirement
+    archive_after: "2years"
+    secure_destruction: true
+```
+
+### Template 2: Financial Services/PCI-DSS Policy
+
+```yaml
+policy_version: "1.1"
+scope: "org:financial_services"
+compliance_framework: "PCI-DSS"
+
+content_rules:
+  pci_detection:
+    enabled: true
+    actions:
+      - type: "credit_card_number"
+        action: "reject"  # Never store full PAN
+      - type: "cvv"
+        action: "reject"  # Never store CVV
+      - type: "tokenized_card"
+        action: "encrypt_tier_3"
+
+credentials:
+  tier_3:
+    confirmation_methods: ["hardware_key"]  # Strongest only
+    spending_limits:
+      per_transaction: 10000
+      per_day: 50000
+    require_dual_approval_above: 100000
+
+  rotation:
+    tier_1: "30days"
+    tier_2: "30days"
+    tier_3: "on_each_use"  # No persistent storage
+
+audit:
+  real_time_monitoring: true
+  anomaly_detection:
+    enabled: true
+    alert_on:
+      - unusual_spending_pattern
+      - velocity_check_failure
+      - geographic_anomaly
+```
+
+### Template 3: Developer/Low-Security Policy
+
+```yaml
+policy_version: "1.1"
+scope: "user:developer"
+compliance_framework: "none"
+
+content_rules:
+  pii_detection:
+    enabled: true
+    actions:
+      - type: "email"
+        action: "hash"
+      - type: "api_key"
+        action: "reject"  # Still no raw secrets
+
+credentials:
+  tier_2:
+    auto_approve: true  # Calendar, email, etc.
+  
+  tier_3:
+    confirmation_methods: ["passphrase", "secure_device"]
+    spending_limits:
+      default: 500
+      cloud_infrastructure: 1000
+    delegation:
+      max_duration: "24hours"
+      auto_renew: true
+
+retention:
+  profile: "1year"
+  episodic: "90days"
+  task: "7days"
+```
+
+---
+
+## Appendix F: Migration Guide from Existing Systems
+
+### Migrating from RAG + Vector Store
+
+**Current state**: Unstructured embeddings in vector DB, no policy layer
+
+**Migration path**:
+1. **Audit existing storage**: Inventory what's in vector store
+2. **Add Memory MCP wrapper**: Route all writes through governance layer
+3. **Classify memories**: Tag as profile/episodic/task/KB
+4. **Apply policies**: Add PII detection, TTLs
+5. **Enable observability**: Allow users to browse/delete
+
+**Timeline**: 2-4 weeks for basic governance
+
+### Migrating from Tool-Based Memory
+
+**Current state**: Agent calls `save_memory(key, value)` tool directly
+
+**Migration path**:
+1. **Replace tool backend**: Point to Memory MCP server
+2. **Add justification**: Require agent to explain why storing
+3. **Enable policy checks**: Validate before persistence
+4. **Add audit logging**: Track all memory operations
+5. **User review**: Periodic "what does agent know about me?"
+
+**Timeline**: 1-2 weeks for tool swap + policy setup
+
+### Migrating from Fine-Tuning Approach
+
+**Current state**: User data baked into model weights
+
+**Migration path**:
+1. **Extract knowledge**: Pull facts from fine-tuned model
+2. **Restructure as memories**: Convert to profile/episodic format
+3. **Store in Memory MCP**: With proper governance
+4. **Revert to base model**: Use retrieval instead of tuning
+5. **Gradual transition**: Phase out fine-tuned model
+
+**Timeline**: 4-8 weeks (complex migration)
+
+---
+
+## Appendix G: Frequently Asked Questions
+
+**Q: Does constitutional memory require replacing our entire agent stack?**
+
+A: No. It's a governance layer that wraps existing memory systems. You can integrate incrementally.
+
+**Q: Is biometric authentication mandatory?**
+
+A: No. Biometrics are one of several confirmation primitives. Hardware keys, secure device approval, and passphrases are equally valid.
+
+**Q: What if users don't want agents storing anything?**
+
+A: Users can disable memory entirely, or enable only specific types (e.g., task memory but not episodic).
+
+**Q: How does this work with existing OAuth flows?**
+
+A: Constitutional memory stores OAuth tokens as Tier 2 credentials, respecting original scopes and expiration.
+
+**Q: What about open-source / self-hosted deployments?**
+
+A: The Memory MCP spec is designed to be implementable by anyone. Reference implementations will be open source.
+
+**Q: Does this add latency to every agent interaction?**
+
+A: Policy checks add minimal latency (<50ms typically). Confirmation flows only trigger for Tier 3+ credentials.
+
+**Q: Can agents operate offline?**
+
+A: Read-only operations can work offline with cached memories. Writes and Tier 3 credentials require connectivity.
+
+**Q: How do I know if my Memory MCP implementation is compliant?**
+
+A: Conformance testing suite will be published as part of Phase 5 (see roadmap).
+
+**Q: What happens if the governance layer fails?**
+
+A: System degrades gracefully: deny by default, restrict to read-only, or pause until governance restored (policy-configurable).
+
+**Q: Is this only for commercial AI providers?**
+
+A: No. Any agent system—commercial, open source, research, personal—can benefit from constitutional memory.
+
+---
+
+## Appendix H: Related Work & Standards
+
+**Identity & Access Management**:
+- OAuth 2.0 (RFC 6749)
+- OpenID Connect
+- SAML 2.0
+- RBAC (NIST RBAC model)
+
+**Authentication & Confirmation**:
+- FIDO2 / WebAuthn (W3C)
+- TOTP (RFC 6238)
+- U2F (Universal 2nd Factor)
+
+**Cryptographic Storage**:
+- PKCS#11 (Cryptographic Token Interface)
+- TPM 2.0 Specification
+- Cloud KMS standards (AWS, GCP, Azure)
+
+**Audit & Compliance**:
+- Common Event Format (CEF)
+- Syslog (RFC 5424)
+- OWASP Logging Cheat Sheet
+- SOC 2 Trust Service Criteria
+
+**Privacy Regulations**:
+- GDPR (EU)
+- CCPA (California)
+- HIPAA (US Healthcare)
+- PCI-DSS (Payment Cards)
+
+**AI Governance (Emerging)**:
+- EU AI Act
+- NIST AI Risk Management Framework
+- ISO/IEC 23894 (AI Risk Management)
+
+---
+
+*This document is released for industry discussion and feedback. The authors welcome critique, alternative proposals, and collaborative refinement. The goal is not to impose a single solution, but to establish shared principles that enable safe, capable, and trustworthy persistent AI agents.*
