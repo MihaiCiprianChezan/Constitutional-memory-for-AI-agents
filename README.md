@@ -1747,6 +1747,6 @@ eu_ai_act:
 
 ---
 
-*Constitutional Memory v2.0 — March 2026. Proposed for industry discussion and collaborative refinement. The goal is to establish shared principles enabling safe, capable, and trustworthy persistent AI agents across the MCP/A2A/ANP protocol ecosystem.*
+*Proposed for industry discussion and collaborative refinement. The goal is to establish shared principles enabling safe, capable, and trustworthy persistent AI agents.*
 
-*The underlying frameworks (Constitutional Memory, SymbioOps, SYRA, AILF) represent original architectural thinking independent of any specific organizational deployment.*
+*The underlying framework represents original architectural thinking independent of any specific organizational deployment.*
