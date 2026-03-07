@@ -1,3 +1,5 @@
+![](./Images/GovernedMemory.jpg)
+
 # Constitutional Memory: Governance Infrastructure for Persistent AI Agents
 
 ## Abstract
