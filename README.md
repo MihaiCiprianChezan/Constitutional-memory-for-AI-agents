@@ -1766,4 +1766,13 @@ eu_ai_act:
 
 *Proposed for industry discussion and collaborative refinement. The goal is to establish shared principles enabling safe, capable, and trustworthy persistent AI agents.*
 
+---
+
+## License
+
+- **Text of this document**: [Creative Commons Attribution 4.0 International (CC BY 4.0)](LICENSE) — share and adapt freely, including commercially, with attribution to the author.
+- **Code samples and policy templates** (YAML, Mermaid, and other snippets in this document): [MIT License](LICENSE-CODE) — so they can be embedded in implementations without CC obligations.
+
+**Suggested attribution**: Mihai-Ciprian Chezan, *Constitutional Memory: Governance Infrastructure for Persistent AI Agents*, v2.1 (2026). https://github.com/MihaiCiprianChezan/Constitutional-memory-for-AI-agents
+
 *The underlying framework represents original architectural thinking independent of any specific organizational deployment.*
