@@ -2,8 +2,8 @@
 
 # Constitutional Memory: Governance Infrastructure for Persistent AI Agents
 
-> **Version 2.0 — March 2026**
-> Updated to reflect the MCP November 2025 specification, A2A/ACP protocol convergence under the Linux Foundation, EU AI Act enforcement timeline (full application August 2026), reasoning model threat surface, multi-agent memory isolation requirements, and production-scale operational realities.
+> **Version 2.1 — July 2026**
+> Updated for the **Digital Omnibus on AI** (Council final approval 29 June 2026, redrawing the EU AI Act high-risk timeline) and the **MCP 2026-07-28 specification** (release candidate: stateless protocol core, Tasks as an official extension, MCP Apps, hardened authorization; final spec due 28 July 2026). Retains the v2.0 coverage of the MCP November 2025 specification, A2A/ACP protocol convergence under the Linux Foundation, reasoning model threat surface, multi-agent memory isolation requirements, and production-scale operational realities.
 
 ---
 
@@ -15,7 +15,7 @@ This document proposes **constitutional memory**: a framework in which memory is
 
 Constitutional memory is not a monolithic product or a mandate to replace existing standards. It is a **governance layer** that integrates with established identity, access management, cryptographic, and audit infrastructures — including the now-mature MCP (Model Context Protocol), A2A (Agent-to-Agent Protocol), and emerging ANP (Agent Network Protocol) ecosystems. Its goal is to enable persistent, background-capable agents without creating opaque or uncontrollable state.
 
-**As of March 2026, the protocol ecosystem has fundamentally shifted.** MCP has been donated to the Linux Foundation's Agentic AI Foundation (AAIF) with Anthropic, Google, Microsoft, AWS, OpenAI, and Block as platinum members. A2A — launched by Google in April 2025 and now also under the Linux Foundation — defines how agents communicate with each other, while MCP governs how agents communicate with tools. IBM's ACP merged into A2A in August 2025. The EU AI Act enters full enforcement on 2 August 2026. Constitutional memory must now be positioned within this mature, standards-governed landscape.
+**As of mid-2026, the protocol ecosystem has fundamentally shifted.** MCP has been donated to the Linux Foundation's Agentic AI Foundation (AAIF) with Anthropic, Google, Microsoft, AWS, OpenAI, and Block as platinum members. A2A — launched by Google in April 2025 and now also under the Linux Foundation — defines how agents communicate with each other, while MCP governs how agents communicate with tools. IBM's ACP merged into A2A in August 2025. The EU AI Act's Article 50 transparency obligations apply from 2 August 2026, while the Digital Omnibus on AI (adopted June 2026) defers the stand-alone high-risk obligations to 2 December 2027. Constitutional memory must now be positioned within this mature, standards-governed landscape.
 
 ---
 
@@ -46,7 +46,7 @@ Constitutional memory is not a monolithic product or a mandate to replace existi
 
 ### 1.1 Context
 
-The AI landscape as of March 2026 has undergone a fundamental shift. Language models are no longer experimental tools — they are deployed in production agentic systems that:
+The AI landscape as of mid-2026 has undergone a fundamental shift. Language models are no longer experimental tools — they are deployed in production agentic systems that:
 
 - Remember user preferences and conversation history across sessions
 - Maintain task state and delegate sub-tasks to specialized agents
@@ -60,11 +60,11 @@ This transition creates a critical infrastructure gap that has only deepened: **
 
 ### 1.2 The Stakes in 2026
 
-**Compliance (urgent)**: The EU AI Act enters full enforcement on **2 August 2026** — five months from the date of this document. GPAI model obligations and penalty enforcement began August 2025. Fines reach €35M or 7% of global annual turnover for prohibited practices. Persistent agents with ungoverned memory are directly implicated in transparency, human oversight, and post-market monitoring obligations.
+**Compliance (restructured, not relaxed)**: The Digital Omnibus on AI — given final Council approval on 29 June 2026 — defers the EU AI Act's stand-alone high-risk (Annex III) obligations to **2 December 2027** (product-embedded Annex I systems: 2 August 2028). But the **Article 50 transparency obligations still apply from 2 August 2026**, machine-readable watermarking for legacy systems follows on 2 December 2026, and a new prohibition on AI generating non-consensual intimate imagery or CSAM takes effect the same day. GPAI model obligations and penalty enforcement began August 2025; fines reach €35M or 7% of global annual turnover for prohibited practices. The deferral is paired with a high-risk registration mechanism and expanded AI Office inspection powers — the clock is structured, not paused. Persistent agents with ungoverned memory are directly implicated in transparency, human oversight, and post-market monitoring obligations.
 
 **Security (escalating)**: Documented real-world exploits now include zero-click RCE via MCP-based IDEs (CVE-2025-59944), EchoLeak (CVE-2025-32711) via Microsoft Copilot email injection, GitHub Copilot RCE (CVE-2025-53773), and Log-To-Leak attacks targeting MCP tool invocation chains. Ungoverned memory is no longer a theoretical attack surface.
 
-**Capability (expanding)**: Agents using reasoning models (o3, Gemini 2.5, DeepSeek R2, Claude 3.7+) plan multi-step operations more effectively than prior generations. This amplifies both their capability and the blast radius of memory compromise.
+**Capability (expanding)**: Agents using current-generation reasoning models (the Claude 5 family and Claude Opus 4.x, GPT-5-class models, Gemini 3, DeepSeek's latest releases) plan multi-step operations more effectively than prior generations. This amplifies both their capability and the blast radius of memory compromise.
 
 **Fragmentation (crystallizing)**: The protocol landscape has converged. MCP governs tool integration. A2A governs agent-to-agent delegation. ANP governs open-internet agent discovery via DIDs. Memory governance must operate coherently across all three layers.
 
@@ -97,13 +97,15 @@ This document:
 
 The agent protocol landscape has stabilized around three complementary standards, all now under Linux Foundation governance:
 
-| Protocol | Governs | Origin | Status (March 2026) |
+| Protocol | Governs | Origin | Status (July 2026) |
 |----------|---------|--------|---------------------|
-| **MCP** (Model Context Protocol) | Agent ↔ Tool communication | Anthropic, Nov 2024 | Donated to AAIF/Linux Foundation, Dec 2025. Latest spec: Nov 2025. Async Tasks primitive added. OAuth 2.1 + RFC 8707 Resource Indicators mandatory. |
+| **MCP** (Model Context Protocol) | Agent ↔ Tool communication | Anthropic, Nov 2024 | Donated to AAIF/Linux Foundation, Dec 2025. Current spec: Nov 2025; **2026-07-28 release candidate published** (stateless core, Tasks as an extension, MCP Apps), final spec 28 July 2026. OAuth 2.1 + RFC 8707 Resource Indicators mandatory; 2026-07-28 adds protocol-level token audience binding. |
 | **A2A** (Agent-to-Agent Protocol) | Agent ↔ Agent communication | Google, April 2025 | Linux Foundation, June 2025. v0.3+ with gRPC, signed Agent Cards. ACP merged in August 2025. 150+ org supporters. |
 | **ANP** (Agent Network Protocol) | Open-internet agent discovery | Community | DID-based (did:wba), decentralized identity, peer-to-peer discovery. Early adoption. |
 
 **MCP November 2025 specification** introduced the Tasks primitive, enabling asynchronous long-running operations — shifting MCP from a call-and-response interface to a workflow orchestration layer. This has profound memory implications: tasks now have lifecycle state that must be governed.
+
+**MCP 2026-07-28** — the largest revision since MCP launched, with the final specification due 28 July 2026 (release candidate published) — makes the protocol core **stateless**: the initialize handshake and the `Mcp-Session-Id` header are removed, and protocol version, client info, and capabilities travel in `_meta` on every request. Tasks moves out of the core into an official **extension** with a polling lifecycle, joined by an Extensions framework, MCP Apps (server-declared, sandboxed interactive UIs), hardened authorization (protocol-level token audience binding), and a formal deprecation policy. For memory governance this is a net gain: fully self-contained requests are simpler to audit, attribute, and route through policy at a gateway (see [Section 6.1](#61-mcp-as-memory-transport)).
 
 **A2A** uses Agent Cards (JSON capability advertisements discoverable via `.well-known` URLs) and supports OAuth 2.0/OIDC for authentication. Sensitive data may traverse intermediate agents in multi-hop A2A chains. Memory governance must account for cross-agent context propagation.
 
@@ -111,7 +113,7 @@ The agent protocol landscape has stabilized around three complementary standards
 
 ### 2.2 Reasoning Model Era
 
-The deployment of reasoning models at scale (OpenAI o3, Gemini 2.5 Pro, Claude 3.7+, DeepSeek R2) changes the memory threat landscape in two directions simultaneously:
+The deployment of reasoning models at scale (as of mid-2026: the Claude 5 family and Claude Opus 4.x, GPT-5-class models, Gemini 3, DeepSeek's latest releases) changes the memory threat landscape in two directions simultaneously:
 
 **Amplified capability**: Reasoning models can execute complex multi-step plans, making long-running agents significantly more powerful and useful. Memory governance must support, not obstruct, this capability.
 
@@ -121,14 +123,16 @@ This is addressed in detail in [Section 13](#13-reasoning-model-considerations).
 
 ### 2.3 Regulatory Inflection Point
 
-| Date | EU AI Act Milestone |
+| Date | EU AI Act Milestone (as amended by the Digital Omnibus on AI, June 2026) |
 |------|---------------------|
 | Feb 2, 2025 | Prohibited AI practices banned. AI literacy obligations active. |
 | Aug 2, 2025 | GPAI model obligations active. Penalty regime operational. AI Office fully operational. Fines up to €35M / 7% turnover. |
-| **Aug 2, 2026** | **Full enforcement. High-risk AI systems (Annex III). Transparency obligations (Article 50). National enforcement fully active.** |
-| Aug 2, 2027 | High-risk AI embedded in regulated products. |
+| **Aug 2, 2026** | **Article 50 transparency obligations apply — not deferred by the Omnibus. National enforcement structures active.** |
+| **Dec 2, 2026** | **Machine-readable watermarking (Art. 50(2)) applies to systems placed on the market before Aug 2, 2026 (new systems must mark from Aug 2, 2026). New prohibition: AI generating non-consensual intimate imagery / CSAM.** |
+| **Dec 2, 2027** | **Stand-alone high-risk AI systems (Annex III), including Art. 14 human oversight. Deferred from Aug 2, 2026.** |
+| Aug 2, 2028 | High-risk AI embedded in regulated products (Annex I). Deferred from Aug 2, 2027. |
 
-Persistent AI agents with delegated authority over financial, personal, or organizational data are directly implicated in the August 2026 obligations. Constitutional memory provides the audit trail, human oversight, and data governance infrastructure these obligations require.
+The Digital Omnibus on AI (provisional agreement 7 May 2026; Parliament endorsement 16 June; Council final approval 29 June 2026; Official Journal publication expected July 2026) redrew this timeline — but paired the deferral with a high-risk registration database and expanded AI Office investigatory powers, including on-site inspections. The clock is structured, not paused. Persistent AI agents with delegated authority over financial, personal, or organizational data are directly implicated in the August 2026 transparency obligations and the December 2027 high-risk obligations. Constitutional memory provides the audit trail, human oversight, and data governance infrastructure these obligations require.
 
 ---
 
@@ -298,7 +302,7 @@ Organizations choose the pattern that matches their scale and requirements.
 
 ```mermaid
 graph TB
-    subgraph "Federated Deployment Pattern (March 2026)"
+    subgraph "Federated Deployment Pattern"
         subgraph Org["Organization Boundary"]
             App1[Agent App 1]
             App2[Agent App 2]
@@ -434,7 +438,7 @@ failure_modes:
 
 ### 6.1 MCP as Memory Transport
 
-MCP (November 2025 spec) is the primary mechanism by which agents invoke memory operations. **Constitutional memory is the governance layer that runs beneath the MCP interface.**
+MCP (November 2025 spec, with the 2026-07-28 revision finalizing as of this writing) is the primary mechanism by which agents invoke memory operations. **Constitutional memory is the governance layer that runs beneath the MCP interface.**
 
 Key MCP concepts relevant to memory governance:
 
@@ -442,9 +446,11 @@ Key MCP concepts relevant to memory governance:
 
 **Tools**: Callable functions. Memory write tools must route through governance before persisting. Tool annotations are untrusted — governance does not rely on them.
 
-**Tasks (new in Nov 2025)**: Asynchronous long-running operations with lifecycle state (created → in-progress → completed/failed). Task state is memory. It must be governed.
+**Tasks (introduced in Nov 2025; an official extension as of 2026-07-28)**: Asynchronous long-running operations with lifecycle state. Production experience with the experimental Nov 2025 primitive led to a redesign: in 2026-07-28, Tasks lives in an extension, task creation is server-directed, and the client drives the lifecycle by polling (`tasks/get`, `tasks/update`, `tasks/cancel`) rather than blocking on `tasks/result`. Task state is memory. It must be governed — whether the capability ships in the core or as an extension.
 
-**OAuth 2.1 + RFC 8707**: MCP servers are now classified as OAuth Resource Servers. Clients must use Resource Indicators to prevent token mis-redemption. Constitutional memory's credential vault integrates with this at Tier 2.
+**OAuth 2.1 + RFC 8707**: MCP servers are classified as OAuth Resource Servers. Clients must use Resource Indicators to prevent token mis-redemption. Constitutional memory's credential vault integrates with this at Tier 2.
+
+**Stateless core (2026-07-28)**: The initialize handshake and the `Mcp-Session-Id` header are removed; every request is self-contained, carrying protocol version, client info, and capabilities in `_meta`. For a governance layer that sits between agent and MCP servers, this strengthens the architecture: provenance can be established per request without reconstructing session state, and policy can be enforced at a stateless gateway that scales on plain HTTP infrastructure. Authorization is hardened in the same revision — token audience binding is enforced at the protocol level, so a token minted for Server A cannot be replayed against Server B — which, together with RFC 8707, directly addresses the confused-deputy problem the Tier 2 credential design defends against.
 
 ```mermaid
 sequenceDiagram
@@ -726,7 +732,7 @@ Agent: "Understood. Until midnight, I can book flights up to $2000
 **Emergency Revocation**:
 ```
 User: "Stop! Cancel all agent access to my payment info"
-System: [Immediate credential revocation across all active MCP sessions and A2A tasks]
+System: [Immediate credential revocation across all active MCP connections and A2A tasks]
 Agent: "All payment credentials revoked. Delegation canceled. Active tasks terminated."
 ```
 
@@ -946,14 +952,14 @@ memory_policies:
 | Audit Trail | SIEM, SOC | Export standard formats |
 | Access Control | LDAP, Active Directory | Integrate identity |
 | Confirmation | MFA (Duo, Okta) | Use as primitives |
-| Protocol Governance | MCP Nov 2025 spec | Memory MCP as governed Resource Server |
+| Protocol Governance | MCP spec (Nov 2025 / 2026-07-28) | Memory MCP as governed Resource Server |
 | Agent Identity | A2A Agent Cards + signing | Provenance validation |
 | Decentralized Identity | ANP/DID | Open-internet agent classification |
 | Regulatory | EU AI Act Art. 13, 14, 50 | Transparency, human oversight, audit |
 
 ### 10.2 OAuth 2.1 + MCP Integration
 
-The MCP November 2025 specification classifies MCP servers as OAuth Resource Servers and mandates RFC 8707 Resource Indicators. Constitutional memory's credential vault integrates directly:
+The MCP November 2025 specification classifies MCP servers as OAuth Resource Servers and mandates RFC 8707 Resource Indicators; the 2026-07-28 revision keeps both and adds protocol-level token audience binding, closing the cross-server token replay path. Constitutional memory's credential vault integrates directly:
 
 ```yaml
 oauth_mcp_integration:
@@ -1125,25 +1131,29 @@ This is addressed in detail in [Section 13](#13-reasoning-model-considerations).
 
 ## 12. Regulatory Alignment: EU AI Act & GDPR
 
-### 12.1 Enforcement Timeline (Current as of March 2026)
+### 12.1 Enforcement Timeline (Current as of July 2026, post-Digital Omnibus)
+
+The Digital Omnibus on AI — provisionally agreed 7 May 2026, endorsed by Parliament 16 June, and given final Council approval 29 June 2026 — restructured the AI Act's application dates. The high-risk deferral is tied to a readiness mechanism: the AI Office is standing up a high-risk registration database and gains expanded investigatory powers, including on-site inspections.
 
 | Date | Status | Relevant to Constitutional Memory |
 |------|--------|-----------------------------------|
 | Feb 2, 2025 | **IN EFFECT** | Prohibited practices banned. AI literacy obligatory. |
 | Aug 2, 2025 | **IN EFFECT** | GPAI obligations. Penalty regime active. €35M / 7% turnover fines. |
-| **Aug 2, 2026** | **5 MONTHS AWAY** | Full enforcement. High-risk systems. Transparency (Art. 50). Human oversight (Art. 14). |
-| Aug 2, 2027 | Upcoming | High-risk AI in regulated products. |
+| **Aug 2, 2026** | **WEEKS AWAY** | Transparency (Art. 50) — **not deferred** by the Omnibus. |
+| **Dec 2, 2026** | Upcoming | Machine-readable watermarking (Art. 50(2)) for systems already on the market. New NCII/CSAM prohibition. |
+| **Dec 2, 2027** | Upcoming | Stand-alone high-risk systems (Annex III). Human oversight (Art. 14). Deferred from Aug 2, 2026. |
+| Aug 2, 2028 | Upcoming | High-risk AI in regulated products (Annex I). Deferred from Aug 2, 2027. |
 
-Organizations deploying persistent agents with delegated authority have **five months to achieve compliance** with the August 2026 obligations. Constitutional memory provides the technical infrastructure for this.
+Organizations deploying persistent agents with delegated authority now face a **split clock**: weeks until the Article 50 transparency obligations apply, and roughly seventeen months until the high-risk obligations — with registration and expanded inspections arriving in between. Constitutional memory provides the technical infrastructure for both horizons.
 
 ### 12.2 Article Mapping
 
 | EU AI Act Article | Obligation | Constitutional Memory Mechanism |
 |------------------|------------|--------------------------------|
 | Art. 13 — Transparency | Users must be informed when interacting with AI | Observability API, memory browser UI |
-| Art. 14 — Human Oversight | Human oversight measures for high-risk AI | Tier 3 confirmation, human review queues, emergency revocation |
+| Art. 14 — Human Oversight | Human oversight measures for high-risk AI (applies from Dec 2, 2027 for Annex III systems) | Tier 3 confirmation, human review queues, emergency revocation |
 | Art. 16 — Provider obligations | Technical documentation, logging | Full audit trail, exportable governance log |
-| Art. 50 — Transparency for interactions | Disclosure for GPAI-based agents | Automated disclosure integrated with confirmation flows |
+| Art. 50 — Transparency for interactions | Disclosure for GPAI-based agents (applies from Aug 2, 2026; Art. 50(2) watermarking for legacy systems from Dec 2, 2026) | Automated disclosure integrated with confirmation flows |
 | Art. 9 — Risk management | Ongoing risk assessment | Anomaly detection, behavioral analysis, incident response |
 | Art. 10 — Data governance | Data quality and management | PII detection, retention policies, purpose limitation |
 | Art. 12 — Record-keeping | Logging for high-risk AI | Immutable audit log, SIEM integration |
@@ -1176,7 +1186,7 @@ GDPR obligations intensify when memory persists personal data:
 
 ### 13.1 What Changes with Reasoning Models
 
-Reasoning models (OpenAI o3, Gemini 2.5 Pro, Claude 3.7+, DeepSeek R2) differ from prior-generation LLMs in ways that directly affect memory governance:
+Current-generation reasoning models (the Claude 5 family and Claude Opus 4.x, GPT-5-class models, Gemini 3, DeepSeek's latest releases) differ from prior-generation LLMs in ways that directly affect memory governance — and the arguments below are model-agnostic, holding for whichever frontier generation is current:
 
 | Capability | Prior LLMs | Reasoning Models | Memory Governance Implication |
 |-----------|-----------|-----------------|-------------------------------|
@@ -1454,7 +1464,7 @@ Test environment: AWS c6i.2xlarge (8 vCPU, 16GB RAM), 100K memories, typical ent
 
 ### Protocol Ecosystem
 
-**Q1**: As MCP's Tasks primitive matures (Nov 2025 spec), how should task-level state be governed differently from user-level episodic memory? What is the minimum viable isolation model?
+**Q1**: As MCP Tasks matures — now an official extension with a server-directed, polling-based lifecycle in the 2026-07-28 spec — how should task-level state be governed differently from user-level episodic memory? What is the minimum viable isolation model, and does the extension boundary change it?
 
 **Q2**: A2A Agent Cards can be signed (v0.3+) but signing is not enforced. Should constitutional memory require signed cards as a condition of any persistent memory write? What is the migration path for unsigned deployments?
 
@@ -1472,7 +1482,7 @@ Test environment: AWS c6i.2xlarge (8 vCPU, 16GB RAM), 100K memories, typical ent
 
 ### EU AI Act
 
-**Q8**: For the August 2026 full enforcement deadline, what minimum set of constitutional memory capabilities constitutes a compliant human oversight mechanism under Article 14?
+**Q8**: For the December 2027 high-risk deadline (Annex III, post-Digital Omnibus), what minimum set of constitutional memory capabilities constitutes a compliant human oversight mechanism under Article 14 — and what does the new high-risk registration database require of memory audit exports?
 
 **Q9**: How should multi-organizational A2A deployments handle data sovereignty requirements when agent chains cross EU/non-EU boundaries?
 
@@ -1502,14 +1512,19 @@ Test environment: AWS c6i.2xlarge (8 vCPU, 16GB RAM), 100K memories, typical ent
 
 ### Summary
 
-Constitutional memory addresses a critical infrastructure gap as AI agents transition from stateless tools to persistent systems with delegated authority — now operating at scale within the MCP/A2A/ANP protocol ecosystem and subject to imminent EU AI Act enforcement.
+Constitutional memory addresses a critical infrastructure gap as AI agents transition from stateless tools to persistent systems with delegated authority — now operating at scale within the MCP/A2A/ANP protocol ecosystem and subject to the EU AI Act's phased enforcement clock.
 
-**Key innovations in this version (March 2026)**:
+**Updated in v2.1 (July 2026)**:
+- EU AI Act timeline realigned to the Digital Omnibus on AI (Council approval 29 June 2026): Art. 50 transparency stays on 2 Aug 2026; watermarking for legacy systems and the NCII/CSAM prohibition land 2 Dec 2026; stand-alone high-risk obligations move to 2 Dec 2027 (Annex I: 2 Aug 2028), paired with a registration database and expanded AI Office inspection powers
+- MCP 2026-07-28 alignment: stateless protocol core (sessions and the initialize handshake removed, `_meta` per request), Tasks reframed as an official extension with a polling lifecycle, MCP Apps, protocol-level token audience binding — each strengthening gateway-level provenance and policy enforcement
+- Model references refreshed to the mid-2026 frontier generation; the reasoning-model threat analysis remains model-agnostic
+
+**Key innovations introduced in v2.0 (March 2026)**:
 - Protocol-aware governance: MCP, A2A, and ANP content classified by trust level at the governance layer
 - A2A memory isolation: Task namespacing, artifact provenance, and cross-agent write controls
 - MCP November 2025 alignment: Tasks primitive governance, OAuth 2.1 + RFC 8707 credential scoping
 - Reasoning model threat model: Planning loop governance, adversarial reasoning defense, trace management
-- EU AI Act compliance map: Article-level obligations mapped to constitutional memory mechanisms with August 2026 deadline urgency
+- EU AI Act compliance map: Article-level obligations mapped to constitutional memory mechanisms (timeline updated in v2.1 per the Digital Omnibus)
 - Updated performance targets: 100ms planning loop overhead target for reasoning model compatibility
 - Expanded threat model: Log-To-Leak, zero-click MCP injection, A2A cross-agent poisoning, deepfake confirmation spoofing
 
@@ -1524,7 +1539,7 @@ With constitutional memory, agents can:
 
 ### Path Forward
 
-As of March 2026, the protocol landscape has converged. MCP and A2A are Linux Foundation standards with broad industry adoption. The EU AI Act is five months from full enforcement. Constitutional memory is no longer a speculative framework — it is a present necessity.
+As of July 2026, the protocol landscape has converged. MCP and A2A are Linux Foundation standards with broad industry adoption, and MCP's 2026-07-28 revision moves the ecosystem decisively toward stateless, gateway-friendly deployments. The EU AI Act's Article 50 transparency obligations are weeks from applying; the high-risk obligations follow in December 2027 under the Digital Omnibus, with registration and expanded AI Office inspections in between. Constitutional memory is no longer a speculative framework — it is a present necessity.
 
 The framework supports incremental adoption. Organizations can begin with observability (Phase 1) and achieve meaningful compliance value long before reaching full lifecycle management (Phase 6). Phase 4 (multi-agent isolation) is now a practical near-term priority for any organization deploying A2A-based systems.
 
@@ -1532,7 +1547,7 @@ The framework supports incremental adoption. Organizations can begin with observ
 
 Memory is not a feature. **Memory is infrastructure.**
 
-Without governance, persistent agents operating across MCP/A2A ecosystems will either remain weak — or become dangerous. The protocol convergence of 2025 has given the industry the communication standards it needed. The EU AI Act enforcement of 2026 has set the compliance deadline. Constitutional memory provides the governance layer that sits between them.
+Without governance, persistent agents operating across MCP/A2A ecosystems will either remain weak — or become dangerous. The protocol convergence of 2025–2026 has given the industry the communication standards it needed. The EU AI Act has set a phased compliance clock: transparency in 2026, high-risk in 2027 — structured, not paused. Constitutional memory provides the governance layer that sits between them.
 
 The goal is not perfect safety. The goal is **accountable capability** — agents that can be trusted because they can be inspected, audited, corrected, and if necessary, stopped.
 
@@ -1560,13 +1575,15 @@ That is the minimum standard persistent agents must meet. The clock is running.
 
 **Delegation**: User-granted authority for agent to perform actions without per-action confirmation, within specified limits. Does not extend to sub-agents by default.
 
-**EU AI Act**: European Union regulation governing AI systems. Full enforcement August 2, 2026. Fines up to €35M or 7% global annual turnover.
+**Digital Omnibus on AI**: EU simplification package amending the AI Act; final Council approval 29 June 2026. Defers stand-alone high-risk obligations (Annex III) to 2 December 2027 and product-embedded (Annex I) to 2 August 2028, leaves Article 50 transparency on 2 August 2026, adds an NCII/CSAM prohibition (2 December 2026), a high-risk registration database, and expanded AI Office investigatory powers.
+
+**EU AI Act**: European Union regulation governing AI systems, applied in phases (as amended by the Digital Omnibus on AI): transparency (Art. 50) from August 2, 2026; stand-alone high-risk (Annex III) from December 2, 2027; product-embedded high-risk (Annex I) from August 2, 2028. Fines up to €35M or 7% global annual turnover.
 
 **GPAI (General Purpose AI) Model**: AI model with broad capabilities usable across many tasks. Subject to EU AI Act obligations from August 2025.
 
 **Log-To-Leak**: Attack pattern where injected prompts covertly redirect MCP tool invocations to exfiltrate agent interactions. Documented in production 2025.
 
-**MCP (Model Context Protocol)**: Open standard for agent-to-tool communication. Created by Anthropic (November 2024), donated to AAIF/Linux Foundation (December 2025). Latest spec: November 2025 (Tasks primitive, OAuth 2.1, RFC 8707).
+**MCP (Model Context Protocol)**: Open standard for agent-to-tool communication. Created by Anthropic (November 2024), donated to AAIF/Linux Foundation (December 2025). Current spec: November 2025 (Tasks primitive, OAuth 2.1, RFC 8707); the 2026-07-28 revision (finalizing July 2026) introduces a stateless core, an Extensions framework, Tasks as an official extension, MCP Apps, and protocol-level token audience binding.
 
 **Memory Poisoning**: Attack where adversary systematically injects false memories to influence agent decisions. Cross-agent variant via A2A is new in 2025-2026.
 
@@ -1574,9 +1591,9 @@ That is the minimum standard persistent agents must meet. The clock is running.
 
 **Provenance**: The tracked origin of content — which protocol layer, MCP server, or A2A agent produced content that influences a memory write.
 
-**Reasoning Model**: LLM with explicit multi-step planning capabilities (o3, Gemini 2.5, Claude 3.7+, DeepSeek R2). Amplifies both agent capability and adversarial sophistication.
+**Reasoning Model**: LLM with explicit multi-step planning capabilities (as of mid-2026: the Claude 5 family and Claude Opus 4.x, GPT-5-class models, Gemini 3, DeepSeek's latest releases). Amplifies both agent capability and adversarial sophistication.
 
-**RFC 8707 Resource Indicators**: OAuth extension mandated by MCP November 2025 spec. Prevents token mis-redemption by binding access tokens to specific resource servers.
+**RFC 8707 Resource Indicators**: OAuth extension mandated by the MCP spec since November 2025 and retained in 2026-07-28, which additionally enforces token audience binding at the protocol level. Prevents token mis-redemption by binding access tokens to specific resource servers.
 
 **Task Namespace**: Isolated memory scope created per A2A task. Expires on task completion unless content is explicitly promoted to persistent memory via governance review.
 
